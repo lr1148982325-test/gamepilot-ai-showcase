@@ -302,7 +302,7 @@ main.content td code { white-space: nowrap; }
 <li>Four-layer resolve guided by core, runtime, and project specs.</li>
 <li>Compact audit that supports interrupt-resume and multi-person append-only CL logs.</li>
 <li>Shelve handoff when more than one client must execute waves.</li>
-<li>Proven on the NIKKE <code>a2-frontend</code> depot: upstream <code>//unity/qa-*</code> snapshots into <code>//a2-frontend/base/sync</code>, then through a temp branch toward <code>//a2-frontend/version/Staging-launch</code>.</li>
+<li>Proven on the <code>a2-frontend</code> depot: upstream <code>//unity/qa-*</code> snapshots into <code>//a2-frontend/base/sync</code>, then through a temp branch toward <code>//a2-frontend/version/Staging-launch</code>.</li>
 </ul>
 
 <h3>Current boundaries</h3>
@@ -321,7 +321,7 @@ main.content td code { white-space: nowrap; }
 
 <p>Start with one dump and two jobs: (1) digest-sync it onto a dedicated <code>sync</code> stream, (2) run a dry-run 4A on a throwaway temp branch until wave budgets and leftover coverage are honest. Write the first runtime spec from the first ten confirmed resolve decisions. Add a project spec only for modules that repeatedly violate generic rules. Expand to multi-person shelve after a single owner has submitted a few waves cleanly — the coordination cost is real, and it only pays once the plan is stable.</p>
 
-<p>The reusable core is the staged topology, the digest import, the path-disjoint wave, the spec funnel, and the compact audit. The NIKKE file lists are a project pack, not the product.</p>
+<p>The reusable core is the staged topology, the digest import, the path-disjoint wave, the spec funnel, and the compact audit. The file lists are a project pack, not the product.</p>
   </main>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
