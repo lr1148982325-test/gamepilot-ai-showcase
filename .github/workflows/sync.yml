@@ -1,0 +1,59 @@
+name: Sync showcases from GitLab
+
+# 定时轮询源工蜂仓库：docs/ 下的 html 有新增或内容变更时，自动提交到本仓库，
+# 从而触发 GitHub Pages 自动重建。
+on:
+  schedule:
+    # 每小时(UTC)同步一次。想要更实时可改成：'*/5 * * * *'
+    - cron: '0 * * * *'
+  workflow_dispatch: {}      # 支持在 GitHub 网页上手动触发
+
+permissions:
+  contents: write            # 允许 push 回本仓库
+
+concurrency:
+  group: sync-showcases
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout this repo
+        uses: actions/checkout@v4
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Clone source GitLab repo
+        env:
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+        run: |
+          git clone --depth 1 --branch master \
+            "https://private:${GITLAB_TOKEN}@git.tencent.com/rdec/ai_show_cases.git" /tmp/src
+
+      - name: Refresh docs/*.html
+        run: |
+          mkdir -p docs
+          rm -f docs/*.html          # 先清掉旧的，保证源仓库删除也能同步
+          cp /tmp/src/docs/*.html docs/
+          echo "--- docs/ ---"
+          ls -1 docs/
+
+      - name: Generate landing page (docs/index.html)
+        run: |
+          python3 scripts/generate_index.py
+          cp public/index.html docs/index.html
+          echo "--- index generated ---"
+
+      - name: Commit & push if changed
+        run: |
+          git add docs/
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No changes to sync."
+            exit 0
+          fi
+          git commit -m "sync: update showcases $(date -u +'%Y-%m-%d %H:%M UTC')"
+          git push origin "HEAD:${GITHUB_REF_NAME}"

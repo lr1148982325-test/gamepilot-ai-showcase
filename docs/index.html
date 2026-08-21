@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RDEC AI Showcases</title>
+<style>
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: #f6f8fb;
+  color: #1f2937;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.6;
+}
+.page { max-width: 1080px; margin: 0 auto; padding: 48px 24px 80px; }
+header.hero {
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 55%, #3b82f6 100%);
+  color: #fff;
+  border-radius: 16px;
+  padding: 40px 40px 36px;
+  margin-bottom: 32px;
+  box-shadow: 0 12px 30px rgba(37, 99, 235, 0.25);
+}
+header.hero h1 { margin: 0 0 10px; font-size: 30px; font-weight: 700; }
+header.hero p { margin: 0; color: rgba(255,255,255,0.85); font-size: 15px; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px 22px;
+  text-decoration: none;
+  color: inherit;
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+.card:hover {
+  transform: translateY(-2px);
+  border-color: #2563eb;
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.12);
+}
+.card h2 {
+  margin: 0 0 8px;
+  font-size: 17px;
+  font-weight: 650;
+  color: #111827;
+  line-height: 1.35;
+}
+.card .desc {
+  margin: 0 0 4px;
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.55;
+}
+.card .arrow {
+  margin-top: auto;
+  padding-top: 12px;
+  font-size: 14px;
+  color: #2563eb;
+}
+footer {
+  margin-top: 40px;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 13px;
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="hero">
+    <h1>RDEC AI Showcases</h1>
+    <p>AI 通用能力项展示 · 点击任意卡片在线浏览渲染后的页面</p>
+  </header>
+
+  <div class="grid">
+    <a class="card" href="3d-mesh-model-standalone_V1.html">
+      <h2>Image-to-3D Mesh Generation</h2>
+      <p class="desc">A Showcase-Driven Production Pipeline · Funcom Collaboration</p>
+      <span class="arrow">Open &rarr;</span>
+    </a>
+    <a class="card" href="3d-motion-model-standalone_V1.html">
+      <h2>Studio-Specific 3D Motion Generation</h2>
+      <p class="desc">The GST Armed-Aim Showcase · Kimodo-SOMA Fine-Tuning</p>
+      <span class="arrow">Open &rarr;</span>
+    </a>
+    <a class="card" href="3d-remesh-retopology-standalone_V1.html">
+      <h2>3D Retopology &amp; Decimation</h2>
+      <p class="desc">Yongxing (Nikke) collaboration — how commercial image-to-3D models and open-source remeshing tools performed against a high-poly, bad-topology asset.</p>
+      <span class="arrow">Open &rarr;</span>
+    </a>
+    <a class="card" href="Intelligent%20Character%20Asset%20Retrieval-standalone_V1.html">
+      <h2>From Reference Images to Explainable Local Asset Discovery</h2>
+      <p class="desc">A character, outfit, and local visual retrieval solution for anime and game CG assets</p>
+      <span class="arrow">Open &rarr;</span>
+    </a>
+    <a class="card" href="NIKKE%20Retrieval-standalone_V1.html">
+      <h2>NIKKE Retrieval (YX Retrieval): Offline Character &amp; Costume Retrieval for Game CG Assets</h2>
+      <p class="desc">Offline Character &amp; Costume Retrieval for Game CG Assets</p>
+      <span class="arrow">Open &rarr;</span>
+    </a>
+    <a class="card" href="ai_auditing-standalone_V1.html">
+      <h2>Game English Text AIGC Detection</h2>
+      <p class="desc">Evaluation &amp; Product Capability Report · Funcom / Techland</p>
+      <span class="arrow">Open &rarr;</span>
+    </a>
+    <a class="card" href="ci-error-analysis-standalone_V1.html">
+      <h2>CI Error Analysis Service</h2>
+      <p class="desc">A reusable CI failure analysis capability for Studios · evidence-gated Agent triage</p>
+      <span class="arrow">Open &rarr;</span>
+    </a>
+    <a class="card" href="code-review-agent-standalone_V1.html">
+      <h2>Code Review Agent</h2>
+      <p class="desc">Multi-Perspective AI Code Review for Game Studios · Yongxing / Funcom / GST / Sharkmob</p>
+      <span class="arrow">Open &rarr;</span>
+    </a>
+    <a class="card" href="figma2ue-standalone_V1.html">
+      <h2>Figma2UE</h2>
+      <p class="desc">Closing the Implementation Gap Between Figma Designs and Unreal UMG</p>
+      <span class="arrow">Open &rarr;</span>
+    </a>
+    <a class="card" href="jira-issue-triage-standalone_V1.html">
+      <h2>Jira Issue Triage with DevPilot</h2>
+      <p class="desc">Declarative Agents for Recurring Dev Workflows · dispatcher/worker fan-out</p>
+      <span class="arrow">Open &rarr;</span>
+    </a>
+    <a class="card" href="p4-merge-workflow-standalone_V1.html">
+      <h2>P4 Merge Workflow: A Staged, Spec-Driven Capability for Million-File Perforce Merges</h2>
+      <p class="desc">Turns a million-file Perforce merge into a repeatable GamePilot skill — detecting stream topology, syncing by content digest, and splitting resolves into path-disjoint, human-owned waves.</p>
+      <span class="arrow">Open &rarr;</span>
+    </a>
+    <a class="card" href="psd2prefab-standalone_V1.html">
+      <h2>PSD2Prefab</h2>
+      <p class="desc">Bridging the Game UI Implementation Gap Between Photoshop and Unity</p>
+      <span class="arrow">Open &rarr;</span>
+    </a>
+    <a class="card" href="psd2umg-standalone_V1.html">
+      <h2>PSD2UMG</h2>
+      <p class="desc">From Layer Organization and Asset Slicing to Unreal UMG</p>
+      <span class="arrow">Open &rarr;</span>
+    </a>
+    <a class="card" href="rd-knowledge-base-deepwiki-standalone_V1.html">
+      <h2>GamePilot R&amp;D Knowledge Base + DeepWiki: Turning Project Context into Reusable AI Capability</h2>
+      <p class="desc">DeepWiki converts a game codebase into a navigable technical wiki; the Knowledge Base then combines it with project documents into a permission-aware, reusable context supply for onboarding, coding, review, and QA workflows.</p>
+      <span class="arrow">Open &rarr;</span>
+    </a>
+    <a class="card" href="refmatch-standalone_V1.html">
+      <h2>RefMatch</h2>
+      <p class="desc">Reference-Driven 2D Asset Region Registration &amp; Stable Crop Workbench</p>
+      <span class="arrow">Open &rarr;</span>
+    </a>
+  </div>
+
+  <footer>RDEC AI Showcases · 由工蜂 Pages 自动部署 · 共 15 项</footer>
+</div>
+</body>
+</html>

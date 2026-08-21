@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>P4 Merge Workflow: A Staged, Spec-Driven Capability for Million-File Perforce Merges — Showcase</title>
+<style>
+:root {
+  --bg: #f6f8fb;
+  --card: #ffffff;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --accent: #2563eb;
+  --accent-soft: #eff6ff;
+  --border: #e5e7eb;
+  --code-bg: #f1f5f9;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.7;
+  font-size: 16px;
+}
+.page { max-width: 1080px; margin: 0 auto; padding: 48px 24px 80px; }
+header.hero {
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 55%, #3b82f6 100%);
+  color: #fff;
+  border-radius: 16px;
+  padding: 40px 40px 36px;
+  margin-bottom: 40px;
+  box-shadow: 0 12px 30px rgba(37, 99, 235, 0.25);
+}
+header.hero h1 {
+  margin: 0 0 14px;
+  font-size: 32px;
+  line-height: 1.3;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+header.hero .subtitle { margin: 0; color: rgba(255,255,255,0.92); font-size: 16px; }
+header.hero .note {
+  margin: 18px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255,255,255,0.25);
+  color: rgba(255,255,255,0.78);
+  font-size: 14px;
+}
+main.content {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 40px 44px;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+}
+main.content h2 {
+  font-size: 24px;
+  margin: 40px 0 16px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--border);
+  color: #111827;
+  line-height: 1.35;
+  scroll-margin-top: 24px;
+}
+main.content h3 { font-size: 19px; margin: 28px 0 12px; color: #111827; line-height: 1.35; }
+main.content p { margin: 0 0 16px; }
+main.content strong { color: #111827; }
+main.content a { color: var(--accent); text-decoration: none; }
+main.content a:hover { text-decoration: underline; }
+main.content a.download-link {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 8px 16px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 8px;
+  font-weight: 600;
+}
+main.content a.download-link:hover { text-decoration: none; opacity: 0.92; }
+main.content ul, main.content ol { margin: 0 0 16px; padding-left: 24px; }
+main.content li { margin: 6px 0; }
+main.content blockquote {
+  margin: 16px 0;
+  padding: 12px 18px;
+  background: var(--accent-soft);
+  border-left: 4px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  color: #374151;
+}
+main.content code {
+  font-family: "SF Mono", SFMono-Regular, ui-monospace, Menlo, Consolas, monospace;
+  background: var(--code-bg);
+  padding: 2px 6px;
+  border-radius: 5px;
+  font-size: 0.9em;
+  color: #b91c1c;
+}
+main.content pre.codeblock {
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 16px 18px;
+  border-radius: 10px;
+  overflow: auto;
+  margin: 16px 0;
+}
+main.content pre.codeblock code { background: none; color: inherit; padding: 0; }
+main.content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.12);
+  display: block;
+}
+main.content figure.figure {
+  margin: 24px 0;
+  text-align: center;
+}
+main.content figure.figure img { margin: 0 auto; }
+main.content figure.figure figcaption {
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--muted);
+}
+main.content em { color: var(--muted); }
+main.content video {
+  width: 100%;
+  max-width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.16);
+  background: #000;
+  display: block;
+}
+.video-wrap { margin: 24px 0; }
+pre.mermaid {
+  background: #fbfcfe;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  overflow: auto;
+  text-align: center;
+  margin: 24px 0;
+}
+main.content .table-wrap {
+  margin: 18px 0 22px;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+main.content table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+  background: #fff;
+}
+main.content th, main.content td {
+  border-bottom: 1px solid var(--border);
+  padding: 11px 14px;
+  text-align: left;
+  vertical-align: top;
+}
+main.content thead th {
+  background: #f8fafc;
+  font-weight: 600;
+  color: #111827;
+  border-bottom: 2px solid var(--border);
+  white-space: nowrap;
+}
+main.content tbody tr:nth-child(even) { background: #fafbfc; }
+main.content tbody tr:last-child td { border-bottom: none; }
+main.content td code { white-space: nowrap; }
+@media (max-width: 640px) {
+  .page { padding: 24px 12px 48px; }
+  header.hero { padding: 28px 22px; }
+  main.content { padding: 24px 18px; }
+  header.hero h1 { font-size: 24px; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="hero">
+    <h1>P4 Merge Workflow: A Staged, Spec-Driven Capability for Million-File Perforce Merges</h1>
+
+
+  </header>
+  <main class="content">
+<p>Live-service game studios that keep a customized downstream branch of a Unity title periodically need to absorb an upstream dump. The dump may be a vendor snapshot, a localization fork, or another team’s mainline. The downstream branch already carries version numbers, hot-update endpoints, shop and billing rules, platform SDKs, and years of local gameplay. A single <code>p4 integrate</code> of that tree into the live branch is not a merge — it is an operational incident waiting to happen.</p>
+
+<p>P4 Merge Workflow turns that incident into a repeatable GamePilot skill: detect the real stream topology, sync the dump by content digest instead of a full reconcile, inherit the live branch onto a temporary merge stream, split the remainder into path-disjoint pending changelists, and resolve each wave through specs, an agent, and a human who still owns every submit.</p>
+
+<p>This showcase focuses on the problems the conventional Perforce path cannot absorb, the reusable architecture, and what has been proven on a million-file Unity depot.</p>
+
+<h2>1. Background: the merge is necessary, but the conventional path does not scale</h2>
+
+<p>A Unity live-ops depot is large, binary-heavy, and semantically split. Upstream and downstream are usually <strong>sibling development streams</strong> under the same mainline — they have no parent/child integrate credit — so the change cannot be merged “along the stream graph.” It has to be staged.</p>
+
+<div class="table-wrap"><table><thead><tr><th>Where the work lived</th><th>Practical problem</th><th>Workflow impact</th></tr></thead><tbody><tr><td>A million-file upstream snapshot</td><td><code>p4 reconcile</code> stats every workspace file against the server.</td><td>A sync that should take hours stretches into days; interruptions force a restart.</td></tr><tr><td>Live downstream (<code>Staging-launch</code> and equivalents)</td><td>Release config, CDN / patch hosts, shop, CI, and platform endpoints are downstream-only.</td><td>A naïve accept-theirs points the build at the wrong servers or drops billing rules.</td></tr><tr><td>Stream topology</td><td><code>base/sync</code> and the live branch are siblings, not parent and child.</td><td>Direct integrate into live is both unsafe and historically credit-confused.</td></tr><tr><td>Conflict surface</td><td>Code, Prefabs, <code>.meta</code>, asmdefs, tables, and art all conflict at once.</td><td>One giant pending CL cannot be reviewed, compiled, or handed to a second person.</td></tr><tr><td>Agent / engineer context</td><td><code>p4 integrate -n</code> and <code>p4 resolve -n</code> emit tens of thousands of lines.</td><td>A model that reads the raw output spends its window on noise and still cannot submit safely.</td></tr></tbody></table></div>
+
+<p>Connecting an agent to <code>p4</code> without a workflow does not solve this. The agent will either freeze on command output, auto-merge files that must stay downstream, or open overlapping paths that Perforce refuses to hold in two pending changelists. The target was therefore not “an LLM that runs Perforce.” It was a reusable engineering capability that answers a narrower question: <strong>how can a studio continuously absorb an upstream dump into a customized live branch without losing downstream meaning, and without forcing one person to resolve a million files in one sitting?</strong></p>
+
+<h2>2. Reusable architecture</h2>
+
+<p>The capability is a GamePilot skill plus a small set of local, deterministic helpers. The skill is the orchestration layer. The scripts never submit. The LLM never writes the depot. Humans remain the accepting authority.</p>
+
+<figure class="figure"><img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNjAwIiBoZWlnaHQ9IjkyMCIgdmlld0JveD0iMCAwIDE2MDAgOTIwIiByb2xlPSJpbWciIGFyaWEtbGFiZWxsZWRieT0idCBkIj4KICA8dGl0bGUgaWQ9InQiPlA0IE1lcmdlIFdvcmtmbG93IGFyY2hpdGVjdHVyZTwvdGl0bGU+CiAgPGRlc2MgaWQ9ImQiPkluc2lkZSB0aGUgc3R1ZGlvLCBhIEdhbWVQaWxvdCBza2lsbCBvcmNoZXN0cmF0ZXMgUGVyZm9yY2Ugc3RyZWFtIHRvcG9sb2d5LCBkaWdlc3QtYmFzZWQgc3luYywgd2F2ZSBwbGFubmluZywgbGF5ZXJlZCByZXNvbHZlLCB0aHJlZS1sYXllciBtZXJnZSBzcGVjcywgYW5kIGEgY29tcGFjdCBhdWRpdCB0cmFpbC4gT25seSB0aGUgTExNIHNpdHMgb3V0c2lkZSB0aGUgc3R1ZGlvIGJvdW5kYXJ5LiBIdW1hbnMgcmVtYWluIHRoZSBzdWJtaXQgYXV0aG9yaXR5LjwvZGVzYz4KICA8ZGVmcz4KICAgIDxzdHlsZT4KICAgICAgLmJne2ZpbGw6IzE3MTkyMn0KICAgICAgLnRpdGxle2ZpbGw6I2Y1ZjdmYjtmb250OjYwMCAzMXB4IEludGVyLCJTZWdvZSBVSSIsIk1pY3Jvc29mdCBZYUhlaSIsc2Fucy1zZXJpZn0KICAgICAgLnN1YnRpdGxle2ZpbGw6IzlhYTRiNTtmb250OjQwMCAxNXB4IEludGVyLCJTZWdvZSBVSSIsIk1pY3Jvc29mdCBZYUhlaSIsc2Fucy1zZXJpZjtsZXR0ZXItc3BhY2luZzouNHB4fQogICAgICAucnVsZXtzdHJva2U6IzM0Mzk0OTtzdHJva2Utd2lkdGg6MX0KICAgICAgLmV5ZWJyb3d7Zm9udDo2MDAgMTEuNXB4IEludGVyLCJTZWdvZSBVSSIsIk1pY3Jvc29mdCBZYUhlaSIsc2Fucy1zZXJpZjtsZXR0ZXItc3BhY2luZzoxLjFweH0KICAgICAgLmNhcmRUaXRsZXtmaWxsOiNmN2Y5ZmM7Zm9udDo2MDAgMTdweCBJbnRlciwiU2Vnb2UgVUkiLCJNaWNyb3NvZnQgWWFIZWkiLHNhbnMtc2VyaWZ9CiAgICAgIC5zbWFsbHtmaWxsOiM5MzllYWY7Zm9udDo0MDAgMTJweCBJbnRlciwiU2Vnb2UgVUkiLCJNaWNyb3NvZnQgWWFIZWkiLHNhbnMtc2VyaWZ9CiAgICAgIC50aW55e2ZpbGw6IzdmOGE5Yztmb250OjUwMCAxMC41cHggSW50ZXIsIlNlZ29lIFVJIiwiTWljcm9zb2Z0IFlhSGVpIixzYW5zLXNlcmlmO2xldHRlci1zcGFjaW5nOi40cHh9CiAgICAgIC5tb25ve2ZpbGw6I2JlYzZkMztmb250OjQwMCAxMXB4ICJDYXNjYWRpYSBNb25vIixDb25zb2xhcyxtb25vc3BhY2V9CiAgICAgIC5zY217ZmlsbDojMWQzMzQ2O3N0cm9rZTojM2Y4ZmJjO3N0cm9rZS13aWR0aDoxLjV9CiAgICAgIC5zdmN7ZmlsbDojMWIyNDMwO3N0cm9rZTojNGM2YTg2O3N0cm9rZS13aWR0aDoxLjV9CiAgICAgIC5hZ2VudHtmaWxsOiMxNzMwMWY7c3Ryb2tlOiM0ZmFiNzM7c3Ryb2tlLXdpZHRoOjIuMn0KICAgICAgLm1vZHtmaWxsOiMxZDNhMjg7c3Ryb2tlOiMzZjdmNWM7c3Ryb2tlLXdpZHRoOjEuMn0KICAgICAgLnNwZWN7ZmlsbDojMmEyMzM4O3N0cm9rZTojN2Q1ZmFlO3N0cm9rZS13aWR0aDoxLjV9CiAgICAgIC5jaGlwe2ZpbGw6IzI0MmEzNjtzdHJva2U6IzQ5NTE1ZjtzdHJva2Utd2lkdGg6MX0KICAgICAgLmF1ZGl0e2ZpbGw6IzFkMzM0NjtzdHJva2U6IzNmOGZiYztzdHJva2Utd2lkdGg6MS4zfQogICAgICAuaHVtYW57ZmlsbDojMmIyNjIwO3N0cm9rZTojOGE2ZjQ1O3N0cm9rZS13aWR0aDoxLjZ9CiAgICAgIC5leHR7ZmlsbDojMmIyNjIwO3N0cm9rZTojOGE2ZjQ1O3N0cm9rZS13aWR0aDoxLjZ9CiAgICAgIC5zdHVkaW9Cb3h7ZmlsbDojMWEyNDIwO3N0cm9rZTojNWY3YTZmO3N0cm9rZS13aWR0aDoxLjc7c3Ryb2tlLWRhc2hhcnJheToxMCA3fQogICAgICAub3V0Qm94e2ZpbGw6IzI1MWYyNjtzdHJva2U6IzhhNmY4YTtzdHJva2Utd2lkdGg6MS41O3N0cm9rZS1kYXNoYXJyYXk6OCA2fQogICAgICAuYmx1ZXtmaWxsOiM3OGFhZmZ9LmdyZWVue2ZpbGw6IzcxZDQ5Yn0udmlvbGV0e2ZpbGw6I2JjOWFmZn0uaWNle2ZpbGw6IzcwYzhlZX0uZ29sZHtmaWxsOiNmMGMzNmF9CiAgICAgIC5mbG93e2ZpbGw6bm9uZTtzdHJva2U6Izg5OTRhNjtzdHJva2Utd2lkdGg6MS44O21hcmtlci1lbmQ6dXJsKCNhcil9CiAgICAgIC5mbG93R3tmaWxsOm5vbmU7c3Ryb2tlOiM1ZmI4YTg7c3Ryb2tlLXdpZHRoOjIuMzttYXJrZXItZW5kOnVybCgjYXJUKX0KICAgICAgLmZsb3dWe2ZpbGw6bm9uZTtzdHJva2U6IzlhN2JkMDtzdHJva2Utd2lkdGg6Mi4wO21hcmtlci1lbmQ6dXJsKCNhclYpfQogICAgICAuZmxvd0R7ZmlsbDpub25lO3N0cm9rZTojNjQ3MDg0O3N0cm9rZS13aWR0aDoxLjQ7c3Ryb2tlLWRhc2hhcnJheTo2IDU7bWFya2VyLWVuZDp1cmwoI2FyKX0KICAgIDwvc3R5bGU+CiAgICA8cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNNDAgMEgwVjQwIiBmaWxsPSJub25lIiBzdHJva2U9IiMxZTIzMzAiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj4KICAgIDxtYXJrZXIgaWQ9ImFyIiB2aWV3Qm94PSIwIDAgMTAgMTAiIHJlZlg9IjguNSIgcmVmWT0iNSIgbWFya2VyV2lkdGg9IjYiIG1hcmtlckhlaWdodD0iNiIgb3JpZW50PSJhdXRvIj48cGF0aCBkPSJNMCAwTDEwIDVMMCAxMHoiIGZpbGw9IiM4OTk0YTYiLz48L21hcmtlcj4KICAgIDxtYXJrZXIgaWQ9ImFyVCIgdmlld0JveD0iMCAwIDEwIDEwIiByZWZYPSI4LjUiIHJlZlk9IjUiIG1hcmtlcldpZHRoPSI2IiBtYXJrZXJIZWlnaHQ9IjYiIG9yaWVudD0iYXV0byI+PHBhdGggZD0iTTAgMEwxMCA1TDAgMTB6IiBmaWxsPSIjNWZiOGE4Ii8+PC9tYXJrZXI+CiAgICA8bWFya2VyIGlkPSJhclYiIHZpZXdCb3g9IjAgMCAxMCAxMCIgcmVmWD0iOC41IiByZWZZPSI1IiBtYXJrZXJXaWR0aD0iNiIgbWFya2VySGVpZ2h0PSI2IiBvcmllbnQ9ImF1dG8iPjxwYXRoIGQ9Ik0wIDBMMTAgNUwwIDEweiIgZmlsbD0iIzlhN2JkMCIvPjwvbWFya2VyPgogICAgPGZpbHRlciBpZD0ic2giIHg9Ii0yMCUiIHk9Ii0yMCUiIHdpZHRoPSIxNDAlIiBoZWlnaHQ9IjE0MCUiPjxmZURyb3BTaGFkb3cgZHg9IjAiIGR5PSI1IiBzdGREZXZpYXRpb249IjEwIiBmbG9vZC1jb2xvcj0iIzA4MDkwZCIgZmxvb2Qtb3BhY2l0eT0iLjMyIi8+PC9maWx0ZXI+CiAgICA8ZmlsdGVyIGlkPSJnbG93IiB4PSItMzAlIiB5PSItMzAlIiB3aWR0aD0iMTYwJSIgaGVpZ2h0PSIxNjAlIj48ZmVEcm9wU2hhZG93IGR4PSIwIiBkeT0iMCIgc3RkRGV2aWF0aW9uPSIxNCIgZmxvb2QtY29sb3I9IiM0ZmFiNzMiIGZsb29kLW9wYWNpdHk9Ii4yNiIvPjwvZmlsdGVyPgogIDwvZGVmcz4KICA8cmVjdCBjbGFzcz0iYmciIHdpZHRoPSIxNjAwIiBoZWlnaHQ9IjkyMCIvPgogIDxyZWN0IHdpZHRoPSIxNjAwIiBoZWlnaHQ9IjkyMCIgZmlsbD0idXJsKCNncmlkKSIgb3BhY2l0eT0iLjU1Ii8+CiAgPHRleHQgY2xhc3M9InRpdGxlIiB4PSI2NCIgeT0iNTYiPlA0IE1lcmdlIFdvcmtmbG93IEFyY2hpdGVjdHVyZTwvdGV4dD4KICA8dGV4dCBjbGFzcz0ic3VidGl0bGUiIHg9IjY0IiB5PSI4NCI+U1RBR0VEIElOVEVHUkFURSAgfCAgU1BFQy1EUklWRU4gUkVTT0xWRSAgfCAgSFVNQU4tQVVUSE9SSVRZIFNVQk1JVDwvdGV4dD4KICA8bGluZSBjbGFzcz0icnVsZSIgeDE9IjY0IiB5MT0iMTA4IiB4Mj0iMTUzNiIgeTI9IjEwOCIvPgoKICA8cmVjdCBjbGFzcz0ic3R1ZGlvQm94IiB4PSI2NCIgeT0iMTQ4IiB3aWR0aD0iMTE0OCIgaGVpZ2h0PSI3MjQiIHJ4PSIxOCIvPgogIDxyZWN0IHg9IjkwIiB5PSIxMzMiIHdpZHRoPSIyOTIiIGhlaWdodD0iMzAiIHJ4PSIxNSIgZmlsbD0iIzE3MTkyMiIgc3Ryb2tlPSIjNWY3YTZmIiBzdHJva2Utd2lkdGg9IjEuNCIvPgogIDx0ZXh0IGNsYXNzPSJleWVicm93IGdyZWVuIiB4PSIyMzYiIHk9IjE1MyIgdGV4dC1hbmNob3I9Im1pZGRsZSI+U1RVRElPIFImYW1wO0QgRU5WSVJPTk1FTlQ8L3RleHQ+CgogIDxyZWN0IGNsYXNzPSJzY20iIHg9Ijg4IiB5PSIxODQiIHdpZHRoPSIyOTIiIGhlaWdodD0iMzcyIiByeD0iMTIiIGZpbHRlcj0idXJsKCNzaCkiLz4KICA8dGV4dCBjbGFzcz0iZXllYnJvdyBibHVlIiB4PSIxMDgiIHk9IjIxMiI+UEVSRk9SQ0UgIC0gIHNvdXJjZSBvZiB0cnV0aDwvdGV4dD4KICA8dGV4dCBjbGFzcz0iY2FyZFRpdGxlIiB4PSIxMDgiIHk9IjI0MCI+U3RyZWFtIFRvcG9sb2d5PC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJ0aW55IiB4PSIxMDgiIHk9IjI2MCI+U2libGluZyBkZXZlbG9wbWVudCBzdHJlYW1zIC0gbm8gZGlyZWN0IG1lcmdlPC90ZXh0PgoKICA8cmVjdCBjbGFzcz0iY2hpcCIgeD0iMTA4IiB5PSIyNzYiIHdpZHRoPSIyNTIiIGhlaWdodD0iNTIiIHJ4PSI4Ii8+CiAgPHRleHQgY2xhc3M9Im1vbm8iIHg9IjEyMiIgeT0iMjk2Ij51cHN0cmVhbSBzbmFwc2hvdDwvdGV4dD4KICA8dGV4dCBjbGFzcz0idGlueSIgeD0iMTIyIiB5PSIzMTQiPmV4dGVybmFsIGR1bXAgIC8vdW5pdHkvcWEtKjwvdGV4dD4KCiAgPHJlY3QgY2xhc3M9ImNoaXAiIHg9IjEwOCIgeT0iMzM4IiB3aWR0aD0iMjUyIiBoZWlnaHQ9IjUyIiByeD0iOCIvPgogIDx0ZXh0IGNsYXNzPSJtb25vIiB4PSIxMjIiIHk9IjM1OCI+YmFzZS9zeW5jPC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJ0aW55IiB4PSIxMjIiIHk9IjM3NiI+ZGlnZXN0LXN5bmNlZCBtaXJyb3Igb2YgdXBzdHJlYW08L3RleHQ+CgogIDxyZWN0IGNsYXNzPSJjaGlwIiB4PSIxMDgiIHk9IjQwMCIgd2lkdGg9IjI1MiIgaGVpZ2h0PSI1MiIgcng9IjgiLz4KICA8dGV4dCBjbGFzcz0ibW9ubyIgeD0iMTIyIiB5PSI0MjAiPnRlbXAgbWVyZ2UgYnJhbmNoPC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJ0aW55IiB4PSIxMjIiIHk9IjQzOCI+aW5oZXJpdHMgbGl2ZSBmaXJzdCwgdGhlbiBhYnNvcmJzIHN5bmM8L3RleHQ+CgogIDxyZWN0IGNsYXNzPSJjaGlwIiB4PSIxMDgiIHk9IjQ2MiIgd2lkdGg9IjI1MiIgaGVpZ2h0PSI1MiIgcng9IjgiLz4KICA8dGV4dCBjbGFzcz0ibW9ubyIgeD0iMTIyIiB5PSI0ODIiPmxpdmUgZG93bnN0cmVhbTwvdGV4dD4KICA8dGV4dCBjbGFzcz0idGlueSIgeD0iMTIyIiB5PSI1MDAiPlN0YWdpbmctbGF1bmNoIC0gbmV2ZXIgbWVyZ2VkIGludG8gZGlyZWN0bHk8L3RleHQ+CgogIDxwYXRoIGNsYXNzPSJmbG93IiBkPSJNMjM0IDMyOCBWMzM4Ii8+CiAgPHBhdGggY2xhc3M9ImZsb3ciIGQ9Ik0yMzQgMzkwIFY0MDAiLz4KICA8cGF0aCBjbGFzcz0iZmxvdyIgZD0iTTIzNCA0NTIgVjQ2MiIvPgoKICA8cmVjdCBjbGFzcz0ic3ZjIiB4PSI4OCIgeT0iNTcyIiB3aWR0aD0iMjkyIiBoZWlnaHQ9IjI3MiIgcng9IjEyIiBmaWx0ZXI9InVybCgjc2gpIi8+CiAgPHRleHQgY2xhc3M9ImV5ZWJyb3cgaWNlIiB4PSIxMDgiIHk9IjYwMCI+V09SS1NQQUNFICAtICBsb2NhbCBjbGllbnQ8L3RleHQ+CiAgPHRleHQgY2xhc3M9ImNhcmRUaXRsZSIgeD0iMTA4IiB5PSI2MjgiPkVuZ2luZWVyIENsaWVudDwvdGV4dD4KICA8dGV4dCBjbGFzcz0ic21hbGwiIHg9IjEwOCIgeT0iNjU2Ij5XaW5kb3dzIFA0IHdvcmtzcGFjZTwvdGV4dD4KICA8dGV4dCBjbGFzcz0ic21hbGwiIHg9IjEwOCIgeT0iNjc4Ij5PcGVuZWQgZmlsZXMgc2NvcGVkIHBlciB3YXZlIENMPC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJzbWFsbCIgeD0iMTA4IiB5PSI3MDAiPi5jYWNoZS8gIGRpZ2VzdCBtZXRhZGF0YSArIHBsYW5zPC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJzbWFsbCIgeD0iMTA4IiB5PSI3MjIiPi5wNC1tZXJnZS8gIGF1ZGl0LCBzcGVjcywgc2NyYXRjaDwvdGV4dD4KICA8dGV4dCBjbGFzcz0idGlueSBnb2xkIiB4PSIxMDgiIHk9Ijc1NCI+TmV2ZXIgYXV0by1zdWJtaXQuIE5ldmVyIHdpZGUgcmVjb25jaWxlLjwvdGV4dD4KICA8dGV4dCBjbGFzcz0idGlueSIgeD0iMTA4IiB5PSI3NzQiPnA0IGluZm8gLyBvcGVuZWQgLyBzdGF0dXMgYmVmb3JlIG11dGF0aW5nPC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJ0aW55IiB4PSIxMDgiIHk9Ijc5NCI+U3dpdGNoIGNsaWVudCBiZXR3ZWVuIHN5bmMgYW5kIG1lcmdlIHN0YWdlczwvdGV4dD4KCiAgPHJlY3QgY2xhc3M9ImFnZW50IiB4PSI0MDgiIHk9IjE4NCIgd2lkdGg9IjM5MiIgaGVpZ2h0PSI0MjgiIHJ4PSIxNCIgZmlsdGVyPSJ1cmwoI2dsb3cpIi8+CiAgPHRleHQgY2xhc3M9ImV5ZWJyb3cgZ3JlZW4iIHg9IjQyOCIgeT0iMjEyIj5PUkNIRVNUUkFUSU9OICAtICBHYW1lUGlsb3Qgc2tpbGw8L3RleHQ+CiAgPHRleHQgY2xhc3M9ImNhcmRUaXRsZSIgeD0iNDI4IiB5PSIyNDAiPlA0IE1lcmdlIFdvcmtmbG93PC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJzbWFsbCIgeD0iNDI4IiB5PSIyNjQiPkd1aWRlcyB0aGUgYWdlbnQgdGhyb3VnaCBhIHN0YWdlZCBtZXJnZTwvdGV4dD4KCiAgPHJlY3QgY2xhc3M9Im1vZCIgeD0iNDI4IiB5PSIyODQiIHdpZHRoPSIzNTIiIGhlaWdodD0iNTAiIHJ4PSI4Ii8+CiAgPHRleHQgY2xhc3M9Im1vbm8iIHg9IjQ0NCIgeT0iMzA0IiBmaWxsPSIjOGZlMGFlIj4xICBQcmVwYXJlPC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJ0aW55IiB4PSI0NDQiIHk9IjMyMiI+RGV0ZWN0IGxpdmUgc3RyZWFtcyAtIGZyZWV6ZSB3aW5kb3cgLSBsb2FkIHNwZWNzPC90ZXh0PgoKICA8cmVjdCBjbGFzcz0ibW9kIiB4PSI0MjgiIHk9IjM0MiIgd2lkdGg9IjM1MiIgaGVpZ2h0PSI1MCIgcng9IjgiLz4KICA8dGV4dCBjbGFzcz0ibW9ubyIgeD0iNDQ0IiB5PSIzNjIiIGZpbGw9IiM4ZmUwYWUiPjIgIERpZ2VzdCBzeW5jPC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJ0aW55IiB4PSI0NDQiIHk9IjM4MCI+TUQ1IHZzIGRlcG90IGRpZ2VzdCAtIG9wZW4gYWRkL2VkaXQvZGVsZXRlIG9ubHk8L3RleHQ+CgogIDxyZWN0IGNsYXNzPSJtb2QiIHg9IjQyOCIgeT0iNDAwIiB3aWR0aD0iMzUyIiBoZWlnaHQ9IjUwIiByeD0iOCIvPgogIDx0ZXh0IGNsYXNzPSJtb25vIiB4PSI0NDQiIHk9IjQyMCIgZmlsbD0iIzhmZTBhZSI+MyAgVGVtcCBicmFuY2g8L3RleHQ+CiAgPHRleHQgY2xhc3M9InRpbnkiIHg9IjQ0NCIgeT0iNDM4Ij5Jbmhlcml0IGRvd25zdHJlYW0sIHRoZW4gaW50ZWdyYXRlIHN5bmM8L3RleHQ+CgogIDxyZWN0IGNsYXNzPSJtb2QiIHg9IjQyOCIgeT0iNDU4IiB3aWR0aD0iMzUyIiBoZWlnaHQ9IjUwIiByeD0iOCIvPgogIDx0ZXh0IGNsYXNzPSJtb25vIiB4PSI0NDQiIHk9IjQ3OCIgZmlsbD0iIzhmZTBhZSI+NCAgV2F2ZSBwbGFuICsgcmVzb2x2ZTwvdGV4dD4KICA8dGV4dCBjbGFzcz0idGlueSIgeD0iNDQ0IiB5PSI0OTYiPjRBIHBlbmRpbmcgQ0xzIC0gNEIgbGF5ZXJlZCByZXNvbHZlIHBlciB3YXZlPC90ZXh0PgoKICA8cmVjdCBjbGFzcz0ibW9kIiB4PSI0MjgiIHk9IjUxNiIgd2lkdGg9IjM1MiIgaGVpZ2h0PSI1MCIgcng9IjgiLz4KICA8dGV4dCBjbGFzcz0ibW9ubyIgeD0iNDQ0IiB5PSI1MzYiIGZpbGw9IiM4ZmUwYWUiPjUgIEZpbmFsIGludGVncmF0ZTwvdGV4dD4KICA8dGV4dCBjbGFzcz0idGlueSIgeD0iNDQ0IiB5PSI1NTQiPlRlbXAgLSZndDsgbGl2ZSBhZnRlciBhbGwgd2F2ZXMgdmVyaWZ5IC0gbGFiZWw8L3RleHQ+CgogIDx0ZXh0IGNsYXNzPSJ0aW55IGdvbGQiIHg9IjQyOCIgeT0iNTkwIj5IdW1hbiByZW1haW5zIHRoZSBhY2NlcHRpbmcgYXV0aG9yaXR5IGZvciBldmVyeSBzdWJtaXQ8L3RleHQ+CgogIDxyZWN0IGNsYXNzPSJzdmMiIHg9IjQwOCIgeT0iNjI4IiB3aWR0aD0iMzkyIiBoZWlnaHQ9IjIxNiIgcng9IjEyIiBmaWx0ZXI9InVybCgjc2gpIi8+CiAgPHRleHQgY2xhc3M9ImV5ZWJyb3cgaWNlIiB4PSI0MjgiIHk9IjY1NiI+REVURVJNSU5JU1RJQyBIRUxQRVJTPC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJjYXJkVGl0bGUiIHg9IjQyOCIgeT0iNjg0Ij5Mb2NhbCBTY3JpcHRzPC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJtb25vIiB4PSI0MjgiIHk9IjcxMiI+c3luYy1mcm9tLXVwc3RyZWFtLnB5PC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJ0aW55IiB4PSI0MjgiIHk9IjczMCI+Q2FjaGVkIGZzdGF0ICsgTUQ1IHBsYW4gIH4xMHggdnMgcmVjb25jaWxlPC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJtb25vIiB4PSI0MjgiIHk9Ijc1NiI+YW5hbHl6ZV9hc21kZWZfdG9wb2xvZ3kucHk8L3RleHQ+CiAgPHRleHQgY2xhc3M9InRpbnkiIHg9IjQyOCIgeT0iNzc0Ij5Vbml0eSBhc3NlbWJseSBncmFwaCAtJmd0OyB3YXZlIG9yZGVyPC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJtb25vIiB4PSI0MjgiIHk9IjgwMCI+c3VtbWFyaXplX2RpZmZfZm9yX2JhdGNoaW5nLnB5PC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJ0aW55IiB4PSI0MjgiIHk9IjgxOCI+Q29tcHJlc3MgbWlsbGlvbi1maWxlIGRpZmZzIGZvciB0aGUgYWdlbnQ8L3RleHQ+CgogIDxyZWN0IGNsYXNzPSJzcGVjIiB4PSI4MjgiIHk9IjE4NCIgd2lkdGg9IjM1NiIgaGVpZ2h0PSIyNTIiIHJ4PSIxMiIgZmlsdGVyPSJ1cmwoI3NoKSIvPgogIDx0ZXh0IGNsYXNzPSJleWVicm93IHZpb2xldCIgeD0iODQ4IiB5PSIyMTIiPkRFQ0lTSU9OIEFVVEhPUklUWTwvdGV4dD4KICA8dGV4dCBjbGFzcz0iY2FyZFRpdGxlIiB4PSI4NDgiIHk9IjI0MCI+VGhyZWUtTGF5ZXIgTWVyZ2UgU3BlY3M8L3RleHQ+CiAgPHJlY3QgY2xhc3M9ImNoaXAiIHg9Ijg0OCIgeT0iMjYwIiB3aWR0aD0iMzE2IiBoZWlnaHQ9IjQ0IiByeD0iOCIvPgogIDx0ZXh0IGNsYXNzPSJtb25vIiB4PSI4NjQiIHk9IjI3OCI+Q29yZSAgUi1DT1JFLSo8L3RleHQ+CiAgPHRleHQgY2xhc3M9InRpbnkiIHg9Ijg2NCIgeT0iMjk0Ij5OZXZlciBvdmVyd3JpdGUgZG93bnN0cmVhbS1vbmx5IGNvbmZpZzwvdGV4dD4KICA8cmVjdCBjbGFzcz0iY2hpcCIgeD0iODQ4IiB5PSIzMTIiIHdpZHRoPSIzMTYiIGhlaWdodD0iNDQiIHJ4PSI4Ii8+CiAgPHRleHQgY2xhc3M9Im1vbm8iIHg9Ijg2NCIgeT0iMzMwIj5SdW50aW1lICBSLSo8L3RleHQ+CiAgPHRleHQgY2xhc3M9InRpbnkiIHg9Ijg2NCIgeT0iMzQ2Ij5UaGlzIG1lcmdlJ3MgY29uZmlybWVkIGRlY2lzaW9uczwvdGV4dD4KICA8cmVjdCBjbGFzcz0iY2hpcCIgeD0iODQ4IiB5PSIzNjQiIHdpZHRoPSIzMTYiIGhlaWdodD0iNDQiIHJ4PSI4Ii8+CiAgPHRleHQgY2xhc3M9Im1vbm8iIHg9Ijg2NCIgeT0iMzgyIj5Qcm9qZWN0ICBTLSo8L3RleHQ+CiAgPHRleHQgY2xhc3M9InRpbnkiIHg9Ijg2NCIgeT0iMzk4Ij5TdHVkaW8gbW9kdWxlcywgZS5nLiBzaG9wIGtlZXAtdGFyZ2V0PC90ZXh0PgoKICA8cmVjdCBjbGFzcz0iYXVkaXQiIHg9IjgyOCIgeT0iNDUyIiB3aWR0aD0iMzU2IiBoZWlnaHQ9IjE4OCIgcng9IjEyIiBmaWx0ZXI9InVybCgjc2gpIi8+CiAgPHRleHQgY2xhc3M9ImV5ZWJyb3cgaWNlIiB4PSI4NDgiIHk9IjQ4MCI+SU5URVJSVVBULVJFU1VNRTwvdGV4dD4KICA8dGV4dCBjbGFzcz0iY2FyZFRpdGxlIiB4PSI4NDgiIHk9IjUwOCI+Q29tcGFjdCBBdWRpdCBUcmFpbDwvdGV4dD4KICA8dGV4dCBjbGFzcz0ic21hbGwiIHg9Ijg0OCIgeT0iNTM2Ij5zdGF0ZS1zdW1tYXJ5Lm1kICAtICByZWNvdmVyeSBlbnRyeTwvdGV4dD4KICA8dGV4dCBjbGFzcz0ic21hbGwiIHg9Ijg0OCIgeT0iNTU4Ij5hdWRpdC1tYWluLmxvZyAgLSAgYXBwZW5kLW9ubHkgdGltZWxpbmU8L3RleHQ+CiAgPHRleHQgY2xhc3M9InNtYWxsIiB4PSI4NDgiIHk9IjU4MCI+Y2wvV25uLUNMeHh4LmxvZyAgLSAgcGVyLXdhdmUgZGVjaXNpb25zPC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJ0aW55IGdvbGQiIHg9Ijg0OCIgeT0iNjEwIj5BZ2VudCByZXJlYWRzIG9ubHkgdGhlIHNtYWxsIHN1bW1hcnksIG5vdCBnaWFudCBsb2dzPC90ZXh0PgoKICA8cmVjdCBjbGFzcz0iaHVtYW4iIHg9IjgyOCIgeT0iNjU2IiB3aWR0aD0iMzU2IiBoZWlnaHQ9IjE4OCIgcng9IjEyIiBmaWx0ZXI9InVybCgjc2gpIi8+CiAgPHRleHQgY2xhc3M9ImV5ZWJyb3cgZ29sZCIgeD0iODQ4IiB5PSI2ODQiPkFDQ0VQVElORyBBVVRIT1JJVFk8L3RleHQ+CiAgPHRleHQgY2xhc3M9ImNhcmRUaXRsZSIgeD0iODQ4IiB5PSI3MTIiPkh1bWFuIFJldmlldyAmYW1wOyBTdWJtaXQ8L3RleHQ+CiAgPHRleHQgY2xhc3M9InNtYWxsIiB4PSI4NDgiIHk9Ijc0MCI+QXBwcm92ZXMgdW5yZXNvbHZlZCAvIGhpZ2gtcmlzayBmaWxlczwvdGV4dD4KICA8dGV4dCBjbGFzcz0ic21hbGwiIHg9Ijg0OCIgeT0iNzYyIj5TdWJtaXRzIGVhY2ggd2F2ZSBDTCBhZnRlciB2ZXJpZnk8L3RleHQ+CiAgPHRleHQgY2xhc3M9InNtYWxsIiB4PSI4NDgiIHk9Ijc4NCI+Q29uZmlybXMgZmluYWwgaW50ZWdyYXRlIHRvIGxpdmU8L3RleHQ+CiAgPHRleHQgY2xhc3M9InRpbnkiIHg9Ijg0OCIgeT0iODE0Ij5BZ2VudCBwcmVwYXJlcywgY2hlY2tzLCBhbmQgcmVjb3JkcyAtIG5ldmVyIHN1Ym1pdHMgYWxvbmU8L3RleHQ+CgogIDxwYXRoIGNsYXNzPSJmbG93RyIgZD0iTTM4MCAzNzAgSDQwOCIvPgogIDx0ZXh0IGNsYXNzPSJ0aW55IiB4PSIzOTQiIHk9IjM2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+cDQ8L3RleHQ+CiAgPHBhdGggY2xhc3M9ImZsb3dWIiBkPSJNODAwIDMxMCBIODI4Ii8+CiAgPHRleHQgY2xhc3M9InRpbnkiIHg9IjgxNCIgeT0iMzAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5zcGVjczwvdGV4dD4KICA8cGF0aCBjbGFzcz0iZmxvd0QiIGQ9Ik04MDAgNTQ2IEg4MjgiLz4KICA8dGV4dCBjbGFzcz0idGlueSIgeD0iODE0IiB5PSI1MzYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPnN0YXRlPC90ZXh0PgogIDxwYXRoIGNsYXNzPSJmbG93IiBkPSJNODAwIDc1MCBIODI4Ii8+CiAgPHRleHQgY2xhc3M9InRpbnkiIHg9IjgxNCIgeT0iNzQwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5hc2s8L3RleHQ+CgogIDxyZWN0IGNsYXNzPSJvdXRCb3giIHg9IjEyNDAiIHk9IjMwMCIgd2lkdGg9IjI5NiIgaGVpZ2h0PSIzNjAiIHJ4PSIxNiIvPgogIDxyZWN0IHg9IjEyNjQiIHk9IjI4NSIgd2lkdGg9IjE5NiIgaGVpZ2h0PSIyOCIgcng9IjE0IiBmaWxsPSIjMTcxOTIyIiBzdHJva2U9IiM4YTZmOGEiIHN0cm9rZS13aWR0aD0iMS40Ii8+CiAgPHRleHQgY2xhc3M9ImV5ZWJyb3cgdmlvbGV0IiB4PSIxMzYyIiB5PSIzMDQiIHRleHQtYW5jaG9yPSJtaWRkbGUiPk9VVFNJREUgU1RVRElPPC90ZXh0PgogIDxyZWN0IGNsYXNzPSJleHQiIHg9IjEyNjQiIHk9IjMzNiIgd2lkdGg9IjI0OCIgaGVpZ2h0PSIyOTIiIHJ4PSIxMiIgZmlsdGVyPSJ1cmwoI3NoKSIvPgogIDx0ZXh0IGNsYXNzPSJleWVicm93IGdvbGQiIHg9IjEyODQiIHk9IjM2OCI+SU5GRVJFTkNFIE9OTFk8L3RleHQ+CiAgPHRleHQgY2xhc3M9ImNhcmRUaXRsZSIgeD0iMTI4NCIgeT0iNDAwIj5MTE08L3RleHQ+CiAgPHRleHQgY2xhc3M9InNtYWxsIiB4PSIxMjg0IiB5PSI0MzAiPldhdmUgcGxhbm5pbmcganVkZ2VtZW50PC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJzbWFsbCIgeD0iMTI4NCIgeT0iNDUyIj5QZXItZmlsZSBjb25mbGljdCBhbmFseXNpczwvdGV4dD4KICA8dGV4dCBjbGFzcz0ic21hbGwiIHg9IjEyODQiIHk9IjQ3NCI+UnVsZSBhcHBsaWNhdGlvbiwgbm90IHN1Ym1pdDwvdGV4dD4KICA8dGV4dCBjbGFzcz0idGlueSIgeD0iMTI4NCIgeT0iNTA4Ij5TZWxmLWhvc3RlZCBvciBjbG91ZC1tYW5hZ2VkPC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJ0aW55IiB4PSIxMjg0IiB5PSI1MjgiPlNlZXMgY29tcHJlc3NlZCBwNCBzdW1tYXJpZXM8L3RleHQ+CiAgPHRleHQgY2xhc3M9InRpbnkgZ29sZCIgeD0iMTI4NCIgeT0iNTYwIj5ObyBkZXBvdCB3cml0ZSBvZiBpdHMgb3duPC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJ0aW55IiB4PSIxMjg0IiB5PSI1ODAiPkFtYmlndW91cyBmaWxlcyBlc2NhbGF0ZSB0byBodW1hbjwvdGV4dD4KICA8cGF0aCBjbGFzcz0iZmxvd1YiIGQ9Ik0xMjEyIDQ4MCBIMTI2NCIvPgogIDx0ZXh0IGNsYXNzPSJ0aW55IHZpb2xldCIgeD0iMTIzOCIgeT0iNDcwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5wcm9tcHQ8L3RleHQ+Cjwvc3ZnPgo=" alt="P4 Merge Workflow architecture" loading="lazy"><figcaption>P4 Merge Workflow architecture</figcaption></figure>
+
+<div class="table-wrap"><table><thead><tr><th>Component</th><th>Responsibility</th></tr></thead><tbody><tr><td>Perforce streams</td><td>Source of truth. Upstream snapshot, <code>sync</code> mirror, temporary merge branch, live target.</td></tr><tr><td>GamePilot skill</td><td>Detects topology, sequences the five stages, compresses command output, applies specs, records audit.</td></tr><tr><td><code>sync-from-upstream.py</code></td><td>Digest-based add/edit/delete plan against a local dump. Cached, resumable, no submit.</td></tr><tr><td><code>analyze_asmdef_topology.py</code></td><td>Read-only Unity assembly graph used to order waves.</td></tr><tr><td><code>summarize_diff_for_batching.py</code></td><td>Collapses <code>p4 diff -se</code> into module / type / directory counts the agent can actually use.</td></tr><tr><td>Three-layer merge specs</td><td>Core red lines, this-merge runtime rules, and studio-specific module policy.</td></tr><tr><td><code>.p4-merge/</code> audit</td><td>Compact <code>state-summary.md</code> for recovery, append-only per-CL logs, human-readable CL map.</td></tr><tr><td>Human</td><td>Confirms undecidable files and submits every changelist.</td></tr><tr><td>LLM</td><td>Planning and per-file judgement only. Self-hosted or cloud-managed; outside the depot write path.</td></tr></tbody></table></div>
+
+<p>This split lets a studio adopt the capability incrementally. A team can start with digest sync of one dump into <code>sync</code>, add a temporary merge branch for the next import, then turn on wave planning and spec-driven resolve once the conflict surface is too large for a single owner.</p>
+
+<h2>3. Showcase 1 — digest sync instead of a full-tree reconcile</h2>
+
+<h3>The actual problem</h3>
+
+<p>Stage two is “make the downstream <code>sync</code> stream identical to this upstream snapshot.” The conventional Perforce answer is <code>p4 reconcile</code> over the client. On a million-file Unity tree that means a server round-trip per file, no useful resume, and a workspace that looks dirty for the entire run. Studios either wait, or they cherry-pick and slowly drift from upstream.</p>
+
+<h3>How the workflow changes it</h3>
+
+<ol>
+<li value="1">The agent binds a dedicated <code>sync</code> client and records <code>p4 info</code> / <code>p4 opened</code> before any mutating command.</li>
+<li value="2"><code>sync-from-upstream.py</code> batches <code>p4 files</code> / <code>p4 fstat</code> into a local digest cache, scans the snapshot for MD5, and writes a plan of add / edit / delete.</li>
+<li value="3">Only files whose digest actually changed are opened. Unchanged files are skipped entirely.</li>
+<li value="4">Caches are keyed by server, user, depot root, and head changelist. An interrupted run continues from the last completed batch.</li>
+<li value="5">The script stops at opened files. A human reviews <code>p4 opened</code> / <code>p4 diff -se</code> and submits.</li>
+</ol>
+
+<p>The measured effect on a million-file depot is about an order of magnitude faster than reconcile, because the expensive work moves from per-file server stat to local digest comparison.</p>
+
+<h3>Result</h3>
+
+<p><code>sync</code> becomes a faithful, auditable mirror of the dump without a multi-day reconcile window. The live branch is still untouched. That is the point: <strong>import and merge are different jobs</strong>, and mixing them is how downstream endpoints get overwritten.</p>
+
+<h2>4. Showcase 2 — wave planning and a four-layer resolve funnel</h2>
+
+<h3>The actual problem</h3>
+
+<p>After <code>sync</code> is current, the remaining work is to combine it with the live branch. Doing that as one integrate produces a pending CL that no one can compile, review, or recover from. Unity makes the ordering worse: Prefabs that land before their scripts show missing components; assemblies that land before their dependencies do not compile; <code>.meta</code> that split from their main file become unsubmitable.</p>
+
+<p>Sibling-stream history adds a second trap. A previous aborted merge can leave <strong>stale integration credit</strong>, so a plain <code>p4 integrate</code> reports “all revision(s) already integrated” while <code>p4 diff2</code> still shows a real delta.</p>
+
+<h3>How the workflow changes it</h3>
+
+<p>The skill never integrates into live. It first copies live onto a temporary merge branch so downstream-only work is the baseline, then integrates <code>sync</code> into that temp branch in waves.</p>
+
+<figure class="figure"><img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNjAwIiBoZWlnaHQ9Ijk4MCIgdmlld0JveD0iMCAwIDE2MDAgOTgwIiByb2xlPSJpbWciIGFyaWEtbGFiZWxsZWRieT0idCBkIj4KICA8dGl0bGUgaWQ9InQiPlA0IE1lcmdlIFdvcmtmbG93IGNvcmUgcGlwZWxpbmU8L3RpdGxlPgogIDxkZXNjIGlkPSJkIj5GaXZlIHN0YWdlZCBzdGVwcyB0dXJuIGFuIHVwc3RyZWFtIHNuYXBzaG90IGludG8gYSBsYWJlbGVkIGxpdmUtYnJhbmNoIG1lcmdlLiBTdGFnZSA0IHNwbGl0cyBpbnRvIHdhdmUgcGxhbm5pbmcgYW5kIGEgZm91ci1sYXllciByZXNvbHZlIGZ1bm5lbCBzbyBtb3N0IGZpbGVzIGFyZSBkZWNpZGVkIGJ5IGF1dG8tbWVyZ2Ugb3Igc3BlY3MgYmVmb3JlIGFueSBodW1hbiBzZWVzIHRoZW0uPC9kZXNjPgogIDxkZWZzPgogICAgPHN0eWxlPgogICAgICAuYmd7ZmlsbDojMTcxOTIyfQogICAgICAudGl0bGV7ZmlsbDojZjVmN2ZiO2ZvbnQ6NjAwIDMxcHggSW50ZXIsIlNlZ29lIFVJIiwiTWljcm9zb2Z0IFlhSGVpIixzYW5zLXNlcmlmfQogICAgICAuc3VidGl0bGV7ZmlsbDojOWFhNGI1O2ZvbnQ6NDAwIDE1cHggSW50ZXIsIlNlZ29lIFVJIiwiTWljcm9zb2Z0IFlhSGVpIixzYW5zLXNlcmlmO2xldHRlci1zcGFjaW5nOi40cHh9CiAgICAgIC5ydWxle3N0cm9rZTojMzQzOTQ5O3N0cm9rZS13aWR0aDoxfQogICAgICAuaWR4e2ZpbGw6Izc3ODI5ODtmb250OjYwMCAxM3B4IEludGVyLCJTZWdvZSBVSSIsIk1pY3Jvc29mdCBZYUhlaSIsc2Fucy1zZXJpZjtsZXR0ZXItc3BhY2luZzoxLjhweH0KICAgICAgLnNlY3Rpb257ZmlsbDojZTllZGY1O2ZvbnQ6NjAwIDE4cHggSW50ZXIsIlNlZ29lIFVJIiwiTWljcm9zb2Z0IFlhSGVpIixzYW5zLXNlcmlmfQogICAgICAuZXllYnJvd3tmb250OjYwMCAxMS41cHggSW50ZXIsIlNlZ29lIFVJIiwiTWljcm9zb2Z0IFlhSGVpIixzYW5zLXNlcmlmO2xldHRlci1zcGFjaW5nOjEuMXB4fQogICAgICAuc3RhZ2V7ZmlsbDojZjdmOWZjO2ZvbnQ6NjAwIDE2cHggSW50ZXIsIlNlZ29lIFVJIiwiTWljcm9zb2Z0IFlhSGVpIixzYW5zLXNlcmlmfQogICAgICAuY29weXtmaWxsOiNhZGI3Yzc7Zm9udDo0MDAgMTJweCBJbnRlciwiU2Vnb2UgVUkiLCJNaWNyb3NvZnQgWWFIZWkiLHNhbnMtc2VyaWZ9CiAgICAgIC50aW55e2ZpbGw6IzdmOGE5Yztmb250OjUwMCAxMC41cHggSW50ZXIsIlNlZ29lIFVJIiwiTWljcm9zb2Z0IFlhSGVpIixzYW5zLXNlcmlmO2xldHRlci1zcGFjaW5nOi40cHh9CiAgICAgIC5zdGVwUGlsbHtmaWxsOiMyMDIzMmQ7c3Ryb2tlOiM0NTRlNjA7c3Ryb2tlLXdpZHRoOjEuM30KICAgICAgLnN0ZXBOdW17ZmlsbDojZmZmO2ZvbnQ6NjAwIDEycHggSW50ZXIsc2Fucy1zZXJpZn0KICAgICAgLmNhcmR7ZmlsbDojMWMxZjI5O3N0cm9rZTojM2M0MzUzO3N0cm9rZS13aWR0aDoxLjN9CiAgICAgIC5ob3R7ZmlsbDojMTczMDFmO3N0cm9rZTojNGZhYjczO3N0cm9rZS13aWR0aDoxLjh9CiAgICAgIC5zcGVje2ZpbGw6IzJhMjMzODtzdHJva2U6IzdkNWZhZTtzdHJva2Utd2lkdGg6MS40fQogICAgICAubGF5ZXJ7ZmlsbDojMWQzMzQ2O3N0cm9rZTojM2Y4ZmJjO3N0cm9rZS13aWR0aDoxLjR9CiAgICAgIC5odW1hbntmaWxsOiMyYjI2MjA7c3Ryb2tlOiM4YTZmNDU7c3Ryb2tlLXdpZHRoOjEuNX0KICAgICAgLmJsdWV7ZmlsbDojNzhhYWZmfS52aW9sZXR7ZmlsbDojYmM5YWZmfS5ncmVlbntmaWxsOiM3MWQ0OWJ9LmdvbGR7ZmlsbDojZjBjMzZhfS5pY2V7ZmlsbDojNzBjOGVlfQogICAgICAuZmxvd3tmaWxsOm5vbmU7c3Ryb2tlOiM3ZDg3OTk7c3Ryb2tlLXdpZHRoOjEuODttYXJrZXItZW5kOnVybCgjYXIpfQogICAgICAuZmxvd1R7ZmlsbDpub25lO3N0cm9rZTojNWZiOGE4O3N0cm9rZS13aWR0aDoyLjI7bWFya2VyLWVuZDp1cmwoI2FyVCl9CiAgICA8L3N0eWxlPgogICAgPHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTTQwIDBIMFY0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMWUyMzMwIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+CiAgICA8bWFya2VyIGlkPSJhciIgdmlld0JveD0iMCAwIDEwIDEwIiByZWZYPSI4LjUiIHJlZlk9IjUiIG1hcmtlcldpZHRoPSI2IiBtYXJrZXJIZWlnaHQ9IjYiIG9yaWVudD0iYXV0byI+PHBhdGggZD0iTTAgMEwxMCA1TDAgMTB6IiBmaWxsPSIjN2Q4Nzk5Ii8+PC9tYXJrZXI+CiAgICA8bWFya2VyIGlkPSJhclQiIHZpZXdCb3g9IjAgMCAxMCAxMCIgcmVmWD0iOC41IiByZWZZPSI1IiBtYXJrZXJXaWR0aD0iNiIgbWFya2VySGVpZ2h0PSI2IiBvcmllbnQ9ImF1dG8iPjxwYXRoIGQ9Ik0wIDBMMTAgNUwwIDEweiIgZmlsbD0iIzVmYjhhOCIvPjwvbWFya2VyPgogICAgPGZpbHRlciBpZD0ic2giIHg9Ii0yMCUiIHk9Ii0yMCUiIHdpZHRoPSIxNDAlIiBoZWlnaHQ9IjE0MCUiPjxmZURyb3BTaGFkb3cgZHg9IjAiIGR5PSI2IiBzdGREZXZpYXRpb249IjEwIiBmbG9vZC1jb2xvcj0iIzA4MDkwZCIgZmxvb2Qtb3BhY2l0eT0iLjI4Ii8+PC9maWx0ZXI+CiAgPC9kZWZzPgogIDxyZWN0IGNsYXNzPSJiZyIgd2lkdGg9IjE2MDAiIGhlaWdodD0iOTgwIi8+CiAgPHJlY3Qgd2lkdGg9IjE2MDAiIGhlaWdodD0iOTgwIiBmaWxsPSJ1cmwoI2dyaWQpIiBvcGFjaXR5PSIuNTUiLz4KICA8dGV4dCBjbGFzcz0idGl0bGUiIHg9IjY0IiB5PSI1NiI+U3RhZ2VkIE1lcmdlIFBpcGVsaW5lPC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJzdWJ0aXRsZSIgeD0iNjQiIHk9Ijg0Ij5GSVZFIFNUQUdFUyAgfCAgUEFUSC1ESVNKT0lOVCBXQVZFUyAgfCAgRk9VUi1MQVlFUiBSRVNPTFZFIEZVTk5FTDwvdGV4dD4KICA8bGluZSBjbGFzcz0icnVsZSIgeDE9IjY0IiB5MT0iMTA4IiB4Mj0iMTUzNiIgeTI9IjEwOCIvPgoKICA8dGV4dCBjbGFzcz0iaWR4IiB4PSI2NCIgeT0iMTQ0Ij4wMTwvdGV4dD48dGV4dCBjbGFzcz0ic2VjdGlvbiIgeD0iOTgiIHk9IjE0NCI+U1RBR0VTICAtICBuZXZlciBtZXJnZSB1cHN0cmVhbSBzdHJhaWdodCBpbnRvIGxpdmU8L3RleHQ+CgogIDxyZWN0IGNsYXNzPSJzdGVwUGlsbCIgeD0iNjQiIHk9IjE2NCIgd2lkdGg9IjI3MiIgaGVpZ2h0PSIxMTgiIHJ4PSIxNCIgZmlsdGVyPSJ1cmwoI3NoKSIvPgogIDxjaXJjbGUgY3g9IjkyIiBjeT0iMTkwIiByPSIxMyIgZmlsbD0iIzJjMzU0NyIgc3Ryb2tlPSIjNjY3NDhjIiBzdHJva2Utd2lkdGg9IjEuMyIvPgogIDx0ZXh0IGNsYXNzPSJzdGVwTnVtIiB4PSI5MiIgeT0iMTk0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj4xPC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJzdGFnZSIgeD0iMTE2IiB5PSIxOTYiPlByZXBhcmU8L3RleHQ+CiAgPHRleHQgY2xhc3M9ImNvcHkiIHg9IjgwIiB5PSIyMjYiPkRldGVjdCBsaXZlIHN0cmVhbXM8L3RleHQ+CiAgPHRleHQgY2xhc3M9ImNvcHkiIHg9IjgwIiB5PSIyNDYiPkxvYWQgdGhyZWUtbGF5ZXIgc3BlY3M8L3RleHQ+CiAgPHRleHQgY2xhc3M9ImNvcHkiIHg9IjgwIiB5PSIyNjYiPkZyZWV6ZSBtZXJnZSB3aW5kb3c8L3RleHQ+CgogIDxwYXRoIGNsYXNzPSJmbG93IiBkPSJNMzM2IDIyMyBIMzUyIi8+CiAgPHJlY3QgY2xhc3M9InN0ZXBQaWxsIiB4PSIzNTgiIHk9IjE2NCIgd2lkdGg9IjI3MiIgaGVpZ2h0PSIxMTgiIHJ4PSIxNCIgZmlsdGVyPSJ1cmwoI3NoKSIvPgogIDxjaXJjbGUgY3g9IjM4NiIgY3k9IjE5MCIgcj0iMTMiIGZpbGw9IiMyYzM1NDciIHN0cm9rZT0iIzY2NzQ4YyIgc3Ryb2tlLXdpZHRoPSIxLjMiLz4KICA8dGV4dCBjbGFzcz0ic3RlcE51bSIgeD0iMzg2IiB5PSIxOTQiIHRleHQtYW5jaG9yPSJtaWRkbGUiPjI8L3RleHQ+CiAgPHRleHQgY2xhc3M9InN0YWdlIiB4PSI0MTAiIHk9IjE5NiI+RGlnZXN0IHN5bmM8L3RleHQ+CiAgPHRleHQgY2xhc3M9ImNvcHkiIHg9IjM3NCIgeT0iMjI2Ij5NRDUgdnMgZGVwb3QgZGlnZXN0PC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJjb3B5IiB4PSIzNzQiIHk9IjI0NiI+T3BlbiBvbmx5IHJlYWwgZGVsdGFzPC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJjb3B5IiB4PSIzNzQiIHk9IjI2NiI+SHVtYW4gc3VibWl0cyBzeW5jIENMPC90ZXh0PgoKICA8cGF0aCBjbGFzcz0iZmxvdyIgZD0iTTYzMCAyMjMgSDY0NiIvPgogIDxyZWN0IGNsYXNzPSJzdGVwUGlsbCIgeD0iNjUyIiB5PSIxNjQiIHdpZHRoPSIyNzIiIGhlaWdodD0iMTE4IiByeD0iMTQiIGZpbHRlcj0idXJsKCNzaCkiLz4KICA8Y2lyY2xlIGN4PSI2ODAiIGN5PSIxOTAiIHI9IjEzIiBmaWxsPSIjMmMzNTQ3IiBzdHJva2U9IiM2Njc0OGMiIHN0cm9rZS13aWR0aD0iMS4zIi8+CiAgPHRleHQgY2xhc3M9InN0ZXBOdW0iIHg9IjY4MCIgeT0iMTk0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj4zPC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJzdGFnZSIgeD0iNzA0IiB5PSIxOTYiPlRlbXAgYnJhbmNoPC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJjb3B5IiB4PSI2NjgiIHk9IjIyNiI+SW5oZXJpdCBsaXZlIGZpcnN0PC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJjb3B5IiB4PSI2NjgiIHk9IjI0NiI+VGhlbiBpbnRlZ3JhdGUgc3luYzwvdGV4dD4KICA8dGV4dCBjbGFzcz0iY29weSIgeD0iNjY4IiB5PSIyNjYiPkRvd25zdHJlYW0gc2VtYW50aWNzIGtlcHQ8L3RleHQ+CgogIDxwYXRoIGNsYXNzPSJmbG93VCIgZD0iTTkyNCAyMjMgSDk0MCIvPgogIDxyZWN0IGNsYXNzPSJob3QiIHg9Ijk0NiIgeT0iMTY0IiB3aWR0aD0iMjcyIiBoZWlnaHQ9IjExOCIgcng9IjE0IiBmaWx0ZXI9InVybCgjc2gpIi8+CiAgPGNpcmNsZSBjeD0iOTc0IiBjeT0iMTkwIiByPSIxMyIgZmlsbD0iIzFkM2EyOCIgc3Ryb2tlPSIjNGZhYjczIiBzdHJva2Utd2lkdGg9IjEuMyIvPgogIDx0ZXh0IGNsYXNzPSJzdGVwTnVtIiB4PSI5NzQiIHk9IjE5NCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+NDwvdGV4dD4KICA8dGV4dCBjbGFzcz0ic3RhZ2UiIHg9Ijk5OCIgeT0iMTk2Ij5XYXZlcyA0QSAvIDRCPC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJjb3B5IiB4PSI5NjIiIHk9IjIyNiI+UGxhbiBwYXRoLWRpc2pvaW50IENMczwvdGV4dD4KICA8dGV4dCBjbGFzcz0iY29weSIgeD0iOTYyIiB5PSIyNDYiPlJlc29sdmUgb25lIHdhdmUgYXQgYSB0aW1lPC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJjb3B5IiB4PSI5NjIiIHk9IjI2NiI+VmVyaWZ5LCB0aGVuIGh1bWFuIHN1Ym1pdDwvdGV4dD4KCiAgPHBhdGggY2xhc3M9ImZsb3ciIGQ9Ik0xMjE4IDIyMyBIMTIzNCIvPgogIDxyZWN0IGNsYXNzPSJzdGVwUGlsbCIgeD0iMTI0MCIgeT0iMTY0IiB3aWR0aD0iMjk2IiBoZWlnaHQ9IjExOCIgcng9IjE0IiBmaWx0ZXI9InVybCgjc2gpIi8+CiAgPGNpcmNsZSBjeD0iMTI2OCIgY3k9IjE5MCIgcj0iMTMiIGZpbGw9IiMyYzM1NDciIHN0cm9rZT0iIzY2NzQ4YyIgc3Ryb2tlLXdpZHRoPSIxLjMiLz4KICA8dGV4dCBjbGFzcz0ic3RlcE51bSIgeD0iMTI2OCIgeT0iMTk0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj41PC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJzdGFnZSIgeD0iMTI5MiIgeT0iMTk2Ij5GaW5hbCBpbnRlZ3JhdGU8L3RleHQ+CiAgPHRleHQgY2xhc3M9ImNvcHkiIHg9IjEyNTYiIHk9IjIyNiI+VGVtcCAtJmd0OyBsaXZlIGFmdGVyIGFsbCB3YXZlczwvdGV4dD4KICA8dGV4dCBjbGFzcz0iY29weSIgeD0iMTI1NiIgeT0iMjQ2Ij5MYWJlbCB0aGUgcmVzdWx0PC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJjb3B5IiB4PSIxMjU2IiB5PSIyNjYiPkF1ZGl0IHRyYWlsIHJldGFpbmVkPC90ZXh0PgoKICA8dGV4dCBjbGFzcz0iaWR4IiB4PSI2NCIgeT0iMzMyIj4wMjwvdGV4dD48dGV4dCBjbGFzcz0ic2VjdGlvbiIgeD0iOTgiIHk9IjMzMiI+U1RBR0UgNCAgLSAgcGxhbiBldmVyeSB3YXZlLCB0aGVuIHJlc29sdmUgaW5kZXBlbmRlbnRseTwvdGV4dD4KCiAgPHJlY3QgY2xhc3M9ImNhcmQiIHg9IjY0IiB5PSIzNTIiIHdpZHRoPSI3MjAiIGhlaWdodD0iMTk2IiByeD0iMTIiIGZpbHRlcj0idXJsKCNzaCkiLz4KICA8dGV4dCBjbGFzcz0iZXllYnJvdyBibHVlIiB4PSI4NCIgeT0iMzgwIj40QSBQTEFOTklORzwvdGV4dD4KICA8dGV4dCBjbGFzcz0ic3RhZ2UiIHg9Ijg0IiB5PSI0MDgiPk9uZSBwZW5kaW5nIENMIHBlciB3YXZlPC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJjb3B5IiB4PSI4NCIgeT0iNDM2Ij5Nb2R1bGUtZmlyc3Qgc3BsaXQgZnJvbSBhc21kZWYgdG9wb2xvZ3ksIGRpcmVjdG9yaWVzLCBHVUlEIHJlZnMsIGFuZCBwcm9qZWN0IHNwZWNzLjwvdGV4dD4KICA8dGV4dCBjbGFzcz0iY29weSIgeD0iODQiIHk9IjQ1NiI+UGF0aCByYW5nZXMgbXVzdCBub3Qgb3ZlcmxhcCAtIGEgZmlsZSBjYW4gYmUgb3BlbiBpbiBvbmx5IG9uZSBwZW5kaW5nIENMLjwvdGV4dD4KICA8dGV4dCBjbGFzcz0iY29weSIgeD0iODQiIHk9IjQ3NiI+QnVkZ2V0IGZpbGUgY291bnQgYW5kIGNodXJuIGJlZm9yZSBvcGVuaW5nOyBsZWZ0b3ZlciBjb3ZlcmFnZSBjaGVja2VkIHdpdGggLURzLjwvdGV4dD4KICA8dGV4dCBjbGFzcz0idGlueSBnb2xkIiB4PSI4NCIgeT0iNTA4Ij5Db2RlIHdhdmVzIH44MC0xNTAgZmlsZXMgLSByZXNvdXJjZSB3YXZlcyBtYXkgYmUgbGFyZ2VyIC0gYXRvbWljIHNldHMgc3RheSB0b2dldGhlcjwvdGV4dD4KICA8dGV4dCBjbGFzcz0idGlueSIgeD0iODQiIHk9IjUyOCI+RGVwZW5kZW5jaWVzIGFyZSBoaW50cywgbm90IGEgaGFyZCBleGVjdXRpb24gb3JkZXI8L3RleHQ+CgogIDxyZWN0IGNsYXNzPSJjYXJkIiB4PSI4MTYiIHk9IjM1MiIgd2lkdGg9IjcyMCIgaGVpZ2h0PSIxOTYiIHJ4PSIxMiIgZmlsdGVyPSJ1cmwoI3NoKSIvPgogIDx0ZXh0IGNsYXNzPSJleWVicm93IGdyZWVuIiB4PSI4MzYiIHk9IjM4MCI+NEIgRVhFQ1VUSU9OPC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJzdGFnZSIgeD0iODM2IiB5PSI0MDgiPlBpY2sgYSBDTCwgcmVzb2x2ZSwgdmVyaWZ5LCBzdWJtaXQ8L3RleHQ+CiAgPHRleHQgY2xhc3M9ImNvcHkiIHg9IjgzNiIgeT0iNDM2Ij5XYXZlcyBhcmUgcGF0aC1kaXNqb2ludCwgc28gdGhleSBjYW4gcHJvY2VlZCBpbiBhbnkgb3JkZXIgb3IgaW4gcGFyYWxsZWwuPC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJjb3B5IiB4PSI4MzYiIHk9IjQ1NiI+U2luZ2xlIG93bmVyOiByZXNvbHZlIG9uIHRoZSBjb29yZGluYXRvciBjbGllbnQuIE4gcGVvcGxlOiBzaGVsdmUgaGFuZG9mZi48L3RleHQ+CiAgPHRleHQgY2xhc3M9ImNvcHkiIHg9IjgzNiIgeT0iNDc2Ij5Db21waWxlIGFmdGVyIGFsbCBjb2RlIHdhdmVzOyBQcmVmYWIvU2NlbmUgY2hlY2tzIGFmdGVyIHNjcmlwdHMgZXhpc3QuPC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJ0aW55IGdvbGQiIHg9IjgzNiIgeT0iNTA4Ij5BIGhhbGYtbWVyZ2VkIHRyZWUgd2lsbCBub3QgY29tcGlsZSAtIHRoYXQgaXMgZXhwZWN0ZWQgdW50aWwgY29kZSB3YXZlcyBmaW5pc2g8L3RleHQ+CiAgPHRleHQgY2xhc3M9InRpbnkiIHg9IjgzNiIgeT0iNTI4Ij5GYWlsZWQgc3VibWl0IG9mIGEgd2F2ZSBpcyB1bmRvbmUgd2l0aCByZXZlcnQgLyB1bmRvLCBuZXZlciBvYmxpdGVyYXRlPC90ZXh0PgoKICA8dGV4dCBjbGFzcz0iaWR4IiB4PSI2NCIgeT0iNTk0Ij4wMzwvdGV4dD48dGV4dCBjbGFzcz0ic2VjdGlvbiIgeD0iOTgiIHk9IjU5NCI+UkVTT0xWRSBGVU5ORUwgIC0gIG1heGltaXplIGF1dG9tYXRpYyBkZWNpc2lvbnMsIG1pbmltaXplIGh1bWFuIGZpbGVzPC90ZXh0PgoKICA8cmVjdCBjbGFzcz0ibGF5ZXIiIHg9IjY0IiB5PSI2MTQiIHdpZHRoPSIzNjAiIGhlaWdodD0iMTMyIiByeD0iMTIiLz4KICA8dGV4dCBjbGFzcz0iZXllYnJvdyBpY2UiIHg9Ijg0IiB5PSI2NDIiPkxBWUVSIDE8L3RleHQ+CiAgPHRleHQgY2xhc3M9InN0YWdlIiB4PSI4NCIgeT0iNjcwIj5wNCByZXNvbHZlIC1hbTwvdGV4dD4KICA8dGV4dCBjbGFzcz0iY29weSIgeD0iODQiIHk9IjY5NiI+U2FmZSBhdXRvLW1lcmdlIG9mIG5vbi1vdmVybGFwcGluZyBlZGl0czwvdGV4dD4KICA8dGV4dCBjbGFzcz0idGlueSIgeD0iODQiIHk9IjcyMCI+U3RpbGwgY29tcGlsZS1jaGVjayBsYXRlciAtIG1lcmdlZCB0ZXh0IGNhbiBiZSB3cm9uZzwvdGV4dD4KCiAgPHBhdGggY2xhc3M9ImZsb3dUIiBkPSJNNDI0IDY4MCBINDQwIi8+CiAgPHJlY3QgY2xhc3M9InNwZWMiIHg9IjQ0NiIgeT0iNjE0IiB3aWR0aD0iMzYwIiBoZWlnaHQ9IjEzMiIgcng9IjEyIi8+CiAgPHRleHQgY2xhc3M9ImV5ZWJyb3cgdmlvbGV0IiB4PSI0NjYiIHk9IjY0MiI+TEFZRVIgMjwvdGV4dD4KICA8dGV4dCBjbGFzcz0ic3RhZ2UiIHg9IjQ2NiIgeT0iNjcwIj5TcGVjIGJhdGNoIC1hdCAvIC1heTwvdGV4dD4KICA8dGV4dCBjbGFzcz0iY29weSIgeD0iNDY2IiB5PSI2OTYiPkNvcmUgLyBydW50aW1lIC8gcHJvamVjdCBydWxlcyBoaXQgZmlyc3Q8L3RleHQ+CiAgPHRleHQgY2xhc3M9InRpbnkiIHg9IjQ2NiIgeT0iNzIwIj5DRE4sIHZlcnNpb24sIENJLCBzaG9wIC0ga2VlcCBkb3duc3RyZWFtPC90ZXh0PgoKICA8cGF0aCBjbGFzcz0iZmxvd1QiIGQ9Ik04MDYgNjgwIEg4MjIiLz4KICA8cmVjdCBjbGFzcz0iY2FyZCIgeD0iODI4IiB5PSI2MTQiIHdpZHRoPSIzNjAiIGhlaWdodD0iMTMyIiByeD0iMTIiLz4KICA8dGV4dCBjbGFzcz0iZXllYnJvdyBibHVlIiB4PSI4NDgiIHk9IjY0MiI+TEFZRVIgMzwvdGV4dD4KICA8dGV4dCBjbGFzcz0ic3RhZ2UiIHg9Ijg0OCIgeT0iNjcwIj5MTE0gcGVyLWZpbGUgZGlmZjwvdGV4dD4KICA8dGV4dCBjbGFzcz0iY29weSIgeD0iODQ4IiB5PSI2OTYiPlRleHQgZmlsZXMgJmx0Oz01MDAtbGluZSBkaWZmIG9ubHk8L3RleHQ+CiAgPHRleHQgY2xhc3M9InRpbnkiIHg9Ijg0OCIgeT0iNzIwIj5QaWNrIGEgc2lkZSwgb3IgZWRpdCB0aGVuIG1hcmsgcmVzb2x2ZWQ8L3RleHQ+CgogIDxwYXRoIGNsYXNzPSJmbG93IiBkPSJNMTE4OCA2ODAgSDEyMDQiLz4KICA8cmVjdCBjbGFzcz0iaHVtYW4iIHg9IjEyMTAiIHk9IjYxNCIgd2lkdGg9IjMyNiIgaGVpZ2h0PSIxMzIiIHJ4PSIxMiIvPgogIDx0ZXh0IGNsYXNzPSJleWVicm93IGdvbGQiIHg9IjEyMzAiIHk9IjY0MiI+TEFZRVIgNDwvdGV4dD4KICA8dGV4dCBjbGFzcz0ic3RhZ2UiIHg9IjEyMzAiIHk9IjY3MCI+SHVtYW4gZGVjaXNpb248L3RleHQ+CiAgPHRleHQgY2xhc3M9ImNvcHkiIHg9IjEyMzAiIHk9IjY5NiI+QmluYXJpZXMsIGh1Z2UgZGlmZnMsIHVuZGVjaWRhYmxlPC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJ0aW55IiB4PSIxMjMwIiB5PSI3MjAiPkFnZW50IHByZXNlbnRzIGV4Y2VycHQgKyByZWNvbW1lbmRhdGlvbjwvdGV4dD4KCiAgPHJlY3QgY2xhc3M9ImNhcmQiIHg9IjY0IiB5PSI3NjgiIHdpZHRoPSIxNDcyIiBoZWlnaHQ9IjE2OCIgcng9IjEyIiBmaWx0ZXI9InVybCgjc2gpIi8+CiAgPHRleHQgY2xhc3M9ImV5ZWJyb3cgZ29sZCIgeD0iODQiIHk9Ijc5NiI+VU5JVFkgT1JERVJJTkcgIC0gIGNvZGUgaXMgdGhlIHNrZWxldG9uPC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJzdGFnZSIgeD0iODQiIHk9IjgyNCI+TW9kdWxlLWZpcnN0IHdhdmVzLCB0eXBlIG9yZGVyIG9ubHkgaW5zaWRlIGEgbW9kdWxlPC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJjb3B5IiB4PSI4NCIgeT0iODU0Ij5Qcm9qZWN0IHNldHRpbmdzIC0mZ3Q7IGZyYW1ld29yayAtJmd0OyBnYW1lcGxheSBzY3JpcHRzIC0mZ3Q7IGRhdGEgLyBTY3JpcHRhYmxlT2JqZWN0cyAtJmd0OyBQcmVmYWIgLyBTY2VuZSAtJmd0OyBhcnQgLSZndDsgYnVpbGQgY29uZmlnLjwvdGV4dD4KICA8dGV4dCBjbGFzcz0iY29weSIgeD0iODQiIHk9Ijg3NiI+QW4gLmFzbWRlZiB0cmF2ZWxzIHdpdGggaXRzIG1vZHVsZS4gUmVmZXJlbmNlZCBhc3NlbWJsaWVzIG1lcmdlIGJlZm9yZSByZWZlcmVuY2Vycy4gU2NyaXB0cyBtZXJnZSBiZWZvcmUgdGhlIGFzc2V0cyB0aGF0IHNlcmlhbGl6ZSB0aGVtLjwvdGV4dD4KICA8dGV4dCBjbGFzcz0idGlueSIgeD0iODQiIHk9IjkwNiI+QXRvbWljIHNldHMgKGNvb3JkaW5hdGVkIHJlZmFjdG9ycywgYXNtZGVmICsgZG93bnN0cmVhbS1vbmx5IHJlZnMsIGZpbGUgKyAubWV0YSkgc3RheSBpbiBvbmUgQ0wgZXZlbiBpZiB0aGV5IGV4Y2VlZCB0aGUgdXN1YWwgZmlsZSBidWRnZXQuPC90ZXh0Pgo8L3N2Zz4K" alt="Staged merge pipeline and resolve funnel" loading="lazy"><figcaption>Staged merge pipeline and resolve funnel</figcaption></figure>
+
+<p><strong>Stage 4A (plan once).</strong> The agent uses asmdef topology, directory structure, GUID references, config pairing, and the project spec to draft waves. Each wave gets its own numbered pending changelist via <code>p4 integrate -c</code>. Paths are required to be disjoint. File-count and churn budgets are checked with <code>integrate -n</code> <strong>before</strong> files are opened, so an oversized code wave is split in planning rather than during resolve. Stale credit is probed with and without <code>-f</code>; deletions are covered with <code>-Ds</code>; leftover files are swept into a targeted cleanup CL, never a full-branch <code>-f</code>.</p>
+
+<p><strong>Stage 4B (execute one CL).</strong> The owner of a wave runs a funnel:</p>
+
+<ol>
+<li value="1"><code>p4 resolve -am</code> for non-overlapping edits.</li>
+<li value="2">Three-layer specs batch-accept theirs or yours (<code>-at</code> / <code>-ay</code>).</li>
+<li value="3">The agent reads diffs of remaining text files at or under ~500 lines.</li>
+<li value="4">Binaries, huge diffs, and undecidable files go to a human with an excerpt and a recommendation.</li>
+</ol>
+
+<p>Core spec red lines are not negotiable: downstream version / channel / hot-update / CDN / shop / CI stay on the target side unless a human explicitly overrides them. Coordinated upstream refactors are taken as a set. An <code>.asmdef</code> that gained upstream references but also holds a downstream-only assembly is union-merged, not blindly taken.</p>
+
+<p>Every decision is appended to that wave’s CL log. The global <code>state-summary.md</code> is the only file the agent rewrites in place, so a crashed session recovers by reading tens of lines rather than a giant transcript.</p>
+
+<h3>Result</h3>
+
+<p>A million-file integrate becomes a list of reviewable changelists with known owners, known path ranges, and a compile story that matches Unity’s real dependency order. Intermediate compile failure after a single code wave is treated as normal, not as a reason to revert the whole merge.</p>
+
+<h2>5. Showcase 3 — one pipeline for 1..N people, via shelve handoff</h2>
+
+<h3>The actual problem</h3>
+
+<p>The merge is too large for one programmer and too coupled for “everyone integrate their own folder.” Perforce numbered pending changelists are bound to the client that created them; they cannot be reassigned. Sharing one workspace is worse: machines are not co-located, and opened files collide.</p>
+
+<h3>How the workflow changes it</h3>
+
+<p>There is only one pipeline. Headcount changes who executes stage 4B, not how waves are planned.</p>
+
+<ul>
+<li><strong>One person:</strong> the coordinator is the only executor. Resolve and submit happen on the coordinator client. Shelve is unused.</li>
+<li><strong>N people:</strong> stage 4A still builds every pending CL on the coordinator client, then <code>p4 shelve</code>s each wave. Assignees <code>unshelve</code> onto their own clients, resolve locally, and shelve back. The coordinator unshelves the returns and is the only submitter.</li>
+</ul>
+
+<p>Roster comes from a project developer list plus a manual override, so art waves can go to art, table waves to design, and code waves to programming, without inventing a second workflow. Because 4A already made path ranges disjoint, parallel resolve is file-safe without a locking protocol.</p>
+
+<p>The human-readable <code>cl-dependencies.html</code> viewer is a static copy of the template; only a small <code>cl-dependencies-data.js</code> is rewritten when status changes. People can open the map in a browser without a local server.</p>
+
+<h3>Result</h3>
+
+<p>The expensive intellectual work — “which files belong in this wave, and do they overlap?” — is done once. Execution can fan out across machines without forking the plan, without sharing a client, and without anyone but the coordinator submitting to the temp branch.</p>
+
+<h2>6. Scope, boundaries, and rollout guidance</h2>
+
+<h3>Current capability</h3>
+
+<ul>
+<li>Topology-first preparation: live vs frozen streams are detected with <code>p4 streams</code> / latest CL date, not copied from a stale example.</li>
+<li>Digest-based snapshot import onto a <code>sync</code> stream, resumable, no automatic submit.</li>
+<li>Temporary merge branch that inherits live before absorbing <code>sync</code>.</li>
+<li>Module-first wave planning with Unity asmdef order, CL size budgets, deletion coverage, and stale-credit handling.</li>
+<li>Four-layer resolve guided by core, runtime, and project specs.</li>
+<li>Compact audit that supports interrupt-resume and multi-person append-only CL logs.</li>
+<li>Shelve handoff when more than one client must execute waves.</li>
+<li>Proven on the NIKKE <code>a2-frontend</code> depot: upstream <code>//unity/qa-*</code> snapshots into <code>//a2-frontend/base/sync</code>, then through a temp branch toward <code>//a2-frontend/version/Staging-launch</code>.</li>
+</ul>
+
+<h3>Current boundaries</h3>
+
+<ul>
+<li>The skill <strong>does not auto-submit</strong>. Preparation, check, and record are automatic; submit is a human action unless the user explicitly orders it.</li>
+<li>It <strong>does not merge upstream into the live branch</strong>. That path is the failure mode the workflow exists to prevent.</li>
+<li>Wide <code>p4 reconcile</code> on a large client is out of policy. Digest sync is the import tool.</li>
+<li>Retrieval and resolve quality depend on spec quality. A missing project spec will still keep core red lines, but studio-specific modules (for example “shop is entirely downstream”) must be written down.</li>
+<li>The agent sees compressed command output by design. It will not read a 20,000-line <code>resolve -n</code> dump.</li>
+<li><code>p4 obliterate</code> is forbidden. Bad waves are reverted or undone with a reverse CL.</li>
+<li>Commands assume a Windows Perforce workspace and PowerShell. The skill is not a cross-OS p4 wrapper.</li>
+</ul>
+
+<h3>Recommended adoption path</h3>
+
+<p>Start with one dump and two jobs: (1) digest-sync it onto a dedicated <code>sync</code> stream, (2) run a dry-run 4A on a throwaway temp branch until wave budgets and leftover coverage are honest. Write the first runtime spec from the first ten confirmed resolve decisions. Add a project spec only for modules that repeatedly violate generic rules. Expand to multi-person shelve after a single owner has submitted a few waves cleanly — the coordination cost is real, and it only pays once the plan is stable.</p>
+
+<p>The reusable core is the staged topology, the digest import, the path-disjoint wave, the spec funnel, and the compact audit. The NIKKE file lists are a project pack, not the product.</p>
+  </main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'default',
+    flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' }
+  });
+</script>
+</body>
+</html>

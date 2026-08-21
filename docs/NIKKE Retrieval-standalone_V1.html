@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NIKKE Retrieval (YX Retrieval): Offline Character &amp; Costume Retrieval for Game CG Assets — Showcase</title>
+<style>
+
+:root {
+  --bg: #f6f8fb;
+  --card: #ffffff;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --accent: #2563eb;
+  --accent-soft: #eff6ff;
+  --border: #e5e7eb;
+  --code-bg: #f1f5f9;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.7;
+  font-size: 16px;
+}
+.page { max-width: 1080px; margin: 0 auto; padding: 48px 24px 80px; }
+header.hero {
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 55%, #3b82f6 100%);
+  color: #fff;
+  border-radius: 16px;
+  padding: 40px 40px 36px;
+  margin-bottom: 40px;
+  box-shadow: 0 12px 30px rgba(37, 99, 235, 0.25);
+}
+header.hero h1 {
+  margin: 0 0 14px;
+  font-size: 32px;
+  line-height: 1.3;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+header.hero .subtitle { margin: 0; color: rgba(255,255,255,0.92); font-size: 16px; }
+header.hero .note {
+  margin: 18px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255,255,255,0.25);
+  color: rgba(255,255,255,0.78);
+  font-size: 14px;
+}
+main.content {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 40px 44px;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+}
+main.content h2 {
+  font-size: 24px;
+  margin: 40px 0 16px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--border);
+  color: #111827;
+  line-height: 1.35;
+  scroll-margin-top: 24px;
+}
+main.content h3 { font-size: 19px; margin: 28px 0 12px; color: #111827; line-height: 1.35; }
+main.content p { margin: 0 0 16px; }
+main.content strong { color: #111827; }
+main.content a { color: var(--accent); text-decoration: none; }
+main.content a:hover { text-decoration: underline; }
+main.content a.download-link {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 8px 16px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 8px;
+  font-weight: 600;
+}
+main.content a.download-link:hover { text-decoration: none; opacity: 0.92; }
+main.content ul, main.content ol { margin: 0 0 16px; padding-left: 24px; }
+main.content li { margin: 6px 0; }
+main.content blockquote {
+  margin: 16px 0;
+  padding: 12px 18px;
+  background: var(--accent-soft);
+  border-left: 4px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  color: #374151;
+}
+main.content code {
+  font-family: "SF Mono", SFMono-Regular, ui-monospace, Menlo, Consolas, monospace;
+  background: var(--code-bg);
+  padding: 2px 6px;
+  border-radius: 5px;
+  font-size: 0.9em;
+  color: #b91c1c;
+}
+main.content pre.codeblock {
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 16px 18px;
+  border-radius: 10px;
+  overflow: auto;
+  margin: 16px 0;
+}
+main.content pre.codeblock code { background: none; color: inherit; padding: 0; }
+main.content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.12);
+  display: block;
+}
+main.content figure.figure {
+  margin: 24px 0;
+  text-align: center;
+}
+main.content figure.figure img { margin: 0 auto; }
+main.content figure.figure figcaption {
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--muted);
+}
+main.content em { color: var(--muted); }
+main.content video {
+  width: 100%;
+  max-width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.16);
+  background: #000;
+  display: block;
+}
+.video-wrap { margin: 24px 0; }
+pre.mermaid {
+  background: #fbfcfe;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  overflow: auto;
+  text-align: center;
+  margin: 24px 0;
+}
+main.content .table-wrap {
+  margin: 18px 0 22px;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+main.content table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+  background: #fff;
+}
+main.content th, main.content td {
+  border-bottom: 1px solid var(--border);
+  padding: 11px 14px;
+  text-align: left;
+  vertical-align: top;
+}
+main.content thead th {
+  background: #f8fafc;
+  font-weight: 600;
+  color: #111827;
+  border-bottom: 2px solid var(--border);
+  white-space: nowrap;
+}
+main.content tbody tr:nth-child(even) { background: #fafbfc; }
+main.content tbody tr:last-child td { border-bottom: none; }
+main.content td code { white-space: nowrap; }
+@media (max-width: 640px) {
+  .page { padding: 24px 12px 48px; }
+  header.hero { padding: 28px 22px; }
+  main.content { padding: 24px 18px; }
+  header.hero h1 { font-size: 24px; }
+}
+
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="hero">
+    <h1>NIKKE Retrieval (YX Retrieval)</h1>
+    <p class="subtitle">Offline Character &amp; Costume Retrieval for Game CG Assets</p>
+  </header>
+<main class="content">
+<h1>NIKKE Retrieval (YX Retrieval): Offline Character &amp; Costume Retrieval for Game CG Assets</h1>
+<blockquote>
+<p>An offline, local-first image retrieval system that finds the same character or the same outfit across a game-art gallery from one to three reference images — built around anime / game CG assets (NIKKE), with explainable, region-level results.</p>
+</blockquote>
+<p>NIKKE Retrieval is the packaged, fully-offline build of the <strong>YX Retrieval</strong> character/costume retrieval engine (Python package <code>yx-retrieval</code>, v0.1.0). It is delivered as <code>nikke_retrieval_v1.0</code>: every model weight, cache, pip wheel, and the Python 3.10 installer are bundled, so the tool runs 100% offline after a one-time setup. The product is intended for content-production, asset-operations, and asset-management teams that hold a meaningful collection of character art, event CG, card artwork, and promotional images and want to search them visually instead of by filename or memory.</p>
+<p>The system ships <strong>two pipelines that coexist</strong> in the same process:</p>
+<ul>
+<li><strong>V2 (recommended):</strong> decouples <em>identity</em> (who) from <em>outfit</em> (what they wear), retrieves through multiple routes, and re-ranks with six weighted signals plus a tag-based decision layer — the mode for precise analysis.</li>
+<li><strong>V1 (legacy):</strong> the original 4-stage pipeline, kept for comparison and as a fallback reference.</li>
+</ul>
+<hr />
+<h2>1. Background and challenges</h2>
+<p>As a character asset library grows from dozens to hundreds or thousands of images, filenames, directory structures, and human memory stop working. The same character appears in many outfits, poses, expressions, and art styles; a single poster may contain several characters; and transparent character art, event CG, screenshots, and promo images vary widely in composition.</p>
+<ol>
+<li><strong>Unreliable filenames</strong> — assets named after dates, event IDs, or download sequences, with no description of the character or outfit.</li>
+<li><strong>Large intra-character variation</strong> — costume changes, half/full-body views, front/side views, and card art differ substantially at the pixel level.</li>
+<li><strong>Multi-character content is hard to separate</strong> — treating the whole image as one object lets other characters and the background contaminate retrieval.</li>
+<li><strong>Identity and outfit similarity are easily confused</strong> — a single global score may return a different character in similar clothes, or miss the same character in a different outfit.</li>
+<li><strong>Sensitive assets must stay local</strong> — unreleased characters, event materials, and internal assets should not be uploaded to public online tools.</li>
+</ol>
+<p>NIKKE Retrieval turns discovery from manual browsing into local, reference-image-driven visual search, while keeping every image on the operator's machine.</p>
+<hr />
+<h2>2. Product positioning and scope</h2>
+<blockquote>
+<p><strong>Upload one to three reference images; the system isolates characters, analyzes identity and outfit, recalls candidates through multiple routes, and returns ranked, explainable matches from a chosen local gallery.</strong></p>
+</blockquote>
+<p>The product contract:</p>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Input</td>
+<td>1–3 PNG / JPG / WEBP reference images; a chosen local gallery directory (supports recursive sub-directory scanning).</td>
+</tr>
+<tr>
+<td>Output</td>
+<td>Ranked candidate images with similarity score, optional detection boxes, instance masks, estimated part masks, WD14 tags, matched regions, and per-signal score breakdowns.</td>
+</tr>
+<tr>
+<td>Deployment</td>
+<td>Local Flask web app + browser UI; also importable as a Python library (<code>yx_retrieval</code>).</td>
+</tr>
+<tr>
+<td>Engine duties</td>
+<td>Detection, segmentation, semantic part-parsing, multi-slot / multi-route feature extraction, FAISS indexing, multi-reference fusion, re-rank, and decision.</td>
+</tr>
+<tr>
+<td>Runtime principle</td>
+<td>Gallery and query images never leave the machine; daily operation is offline after install; auto-detects NVIDIA GPU and falls back to CPU.</td>
+</tr>
+<tr>
+<td>Scope</td>
+<td>Same-character and same-outfit discovery across a gallery; not a generator, tagger, or auto-archiver — it produces candidates for human review.</td>
+</tr>
+</tbody>
+</table>
+<p>The product does not replace final business judgment. It converts large-scale manual browsing into focused candidate review, and makes the basis of each result easy to audit.</p>
+<hr />
+<h2>3. Application scenarios</h2>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>What the operator does</th>
+<th>Why it helps</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Historical character-asset discovery</td>
+<td>Start from an event image; find related illustrations, card art, and promo materials of the same character.</td>
+<td>Reuses existing assets instead of re-searching by name.</td>
+</tr>
+<tr>
+<td>Outfit and accessory retrieval</td>
+<td>Find similar tops, bottoms, shoes, or accessories to support art reference and consistency checks.</td>
+<td>Region-level signals separate "same outfit" from "same character".</td>
+</tr>
+<tr>
+<td>Assisted archiving</td>
+<td>Generate candidate characters and visual relationships for poorly named images; human confirms and archives.</td>
+<td>Turns a nameless file into a reviewable shortlist.</td>
+</tr>
+<tr>
+<td>Duplicate / near-duplicate checks</td>
+<td>Discover assets with related subjects despite differences in composition, crop, or background.</td>
+<td>Catches redundancy that filename comparison misses.</td>
+</tr>
+<tr>
+<td>Dataset / query-set preparation</td>
+<td>Build candidate groups quickly for positive samples, hard negatives, and evaluation sets.</td>
+<td>Cuts the effort of assembling query sets by hand.</td>
+</tr>
+<tr>
+<td>Delivery acceptance &amp; inventory</td>
+<td>Sample representative characters to review gallery coverage.</td>
+<td>Gives a coverage signal before final delivery.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>4. System architecture and data flow</h2>
+<p>The product is a local browser interface talking to a local application service, which drives a visual-processing pipeline, builds retrieval indexes, and reads/writes only local data directories.</p>
+<pre class="mermaid">flowchart TB
+    U[Local browser UI&lt;br/&gt;app.html] --&gt;|Select gallery / upload 1-3 references| W[Flask web app&lt;br/&gt;web_app.py]
+    W --&gt; P[Pipeline: detect · segment · parse · encode]
+    P --&gt; I[Multi-route FAISS indexes&lt;br/&gt;identity / outfit-global / outfit-local]
+    I --&gt; R[Candidate recall → 6-term rerank → decision]
+    R --&gt; U
+    G[Local gallery directory] --&gt; P
+    G --&gt; S[Incremental sync&lt;br/&gt;size-stamp diff]
+    S --&gt; I
+    C[Local cache &amp;amp; feature store&lt;br/&gt;data/indices · results] --- I
+</pre>
+<p>By default the service listens only on the local machine and is opened through a local browser. It is a local, single-machine tool — not an internet service or multi-user platform, and should not be exposed to the public network.</p>
+<hr />
+<h2>5. Retrieval pipeline</h2>
+<p>Both versions share the same front-end orchestration (<code>RetrievalPipeline</code> for V1, <code>RetrievalPipelineV2</code> for V2) and can run in the same Python process, even sharing the same EVA02-CLIP weights file.</p>
+<h3>5.1 V1 — 4-stage coupled pipeline</h3>
+<pre class="mermaid">flowchart LR
+    A[Gallery / reference image] --&gt; B[Detection&lt;br/&gt;GroundingDINO]
+    B --&gt; C[Segmentation&lt;br/&gt;SAM2 full mask]
+    C --&gt; D[Feature&lt;br/&gt;EVA02-CLIP multi-slot + HSV colour]
+    D --&gt; E[FAISS HNSW retrieval&lt;br/&gt;+ multi-reference fusion]
+    E --&gt; F[Ranked results]
+</pre>
+<ol>
+<li><strong>Detection (GroundingDINO)</strong> — locates character bounding boxes from the prompt <code>character . person</code>, with NMS and a large-box re-check that splits multi-character KV / banner crops by head detections.</li>
+<li><strong>Segmentation (SAM2)</strong> — produces a full instance mask per box; overlapping masks are merged by IoU / containment / center-distance heuristics tuned for crowd scenes.</li>
+<li><strong>Feature extraction (EVA02-CLIP)</strong> — extracts a hybrid vector per crop slot (<code>global</code>, <code>hair</code>, <code>upper_body</code>, <code>torso</code>) and appends an HSV colour histogram (hue 48 / sat 16 bins) with a configurable colour share (<code>color_weight = 0.3</code>).</li>
+<li><strong>Retrieval (FAISS HNSW)</strong> — cosine-similarity search over an <code>hnsw_flat</code> index (<code>m = 32</code>, <code>ef_construction = 200</code>, <code>ef_search = 128</code>); multiple references are fused with a geometric-mean ensemble (<code>prototype_weight = 0.6</code>, <code>max_ref_weight = 0.4</code>, up to 3 references).</li>
+</ol>
+<h3>5.2 V2 — 7-stage decoupled pipeline (recommended)</h3>
+<pre class="mermaid">flowchart LR
+    A[Gallery / 1-3 references] --&gt; B[Detect + Segment&lt;br/&gt;or alpha fast-path]
+    B --&gt; C[Parse&lt;br/&gt;AnimeParser / geometric]
+    C --&gt; D[Encode&lt;br/&gt;identity · outfit-global · outfit-local&lt;br/&gt;+ colour/LBP/exposure descriptors]
+    D --&gt; E[Multi-route FAISS index]
+    E --&gt; F[Multi-route recall&lt;br/&gt;identity 0.60 / outfit-global 0.30 / outfit-local 0.10]
+    F --&gt; G[6-term rerank&lt;br/&gt;identity · tag · outfit-global · outfit-local · colour · texture · exposure]
+    G --&gt; H[Decision&lt;br/&gt;same-char / same-outfit + WD14 tag verify]
+    H --&gt; I[Explainable results]
+</pre>
+<p>New relative to V1:</p>
+<ul>
+<li><strong>Parse (stage 2b)</strong> — semantic part-parsing via <code>AnimeParser</code> (imgutils-backed) with a geometric fallback; estimates face / hair / half-body / hand / pose regions so identity and outfit can be measured on the right pixels.</li>
+<li><strong>Encode (stage 3)</strong> — three separate routes share one CLIP backbone: <code>IdentityEncoder</code> (routes face∪hair through the anime-character <strong>CCIP</strong> model to separate same-art-style characters), <code>OutfitGlobalEncoder</code>, and <code>OutfitLocalEncoder</code>; plus colour / LBP / exposure descriptors.</li>
+<li><strong>Multi-route index (stage 4)</strong> — <code>MultiRouteIndex</code> keeps independent FAISS routes for identity, outfit-global, and outfit-local.</li>
+<li><strong>Recall (stage 5)</strong> — recalls <code>k_total = 500</code> candidates by per-route quota (<code>identity 0.60</code>, <code>outfit_global 0.30</code>, <code>outfit_local 0.10</code>), then deduplicates.</li>
+<li><strong>Rerank (stage 6)</strong> — a weighted blend of seven signals: <code>identity 0.25</code>, <code>tag_identity 0.25</code>, <code>outfit_global 0.20</code>, <code>outfit_local 0.15</code>, <code>colour 0.10</code>, <code>texture 0.10</code>, <code>exposure 0.05</code>.</li>
+<li><strong>Decision (stage 7)</strong> — classifies each survivor as same-character / same-outfit against thresholds (<code>tau_identity 0.78</code>, <code>tau_outfit 0.96</code>, <code>tau_colour 0.90</code>) with an edge-band Jaccard escape hatch and optional WD14 tag verification (<code>character_threshold 0.85</code>).</li>
+</ul>
+<h3>5.3 Engineering details that matter in production</h3>
+<table>
+<thead>
+<tr>
+<th>Concern</th>
+<th>Implementation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Alpha fast-path</strong></td>
+<td>Pre-cut transparent assets (e.g. OB13 character sheets) skip GroundingDINO + SAM2 and are split into one instance per connected component — faster <em>and</em> more accurate than detecting already-cutout art.</td>
+</tr>
+<tr>
+<td><strong>Incremental indexing</strong></td>
+<td><code>build_index</code> diffs the gallery against per-file <strong>size stamps</strong> and re-extracts only added / modified / removed files; unchanged galleries are a cheap no-op scan. Stamps use file size (not mtime) so an index copied to another machine is reused as-is.</td>
+</tr>
+<tr>
+<td><strong>Portable caches</strong></td>
+<td>Stored source paths are gallery-relative; an index stays valid after the gallery moves or is copied between machines. Legacy cache formats are migrated transparently on load.</td>
+</tr>
+<tr>
+<td><strong>GPU memory management</strong></td>
+<td>Lazy model loading; optional park-to-CPU between stages so GD / SAM2 / CLIP never co-reside on a 6 GB card; automatic CUDA-OOM → CPU fallback per stage.</td>
+</tr>
+<tr>
+<td><strong>Multi-reference fusion</strong></td>
+<td>Up to 3 references are fused (geometric-mean by default) so multiple angles beat a single shot.</td>
+</tr>
+<tr>
+<td><strong>Explainability</strong></td>
+<td>The UI can render detection boxes, instance masks, estimated part masks, WD14 tags, matched regions, and per-signal score breakdowns for every hit.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>6. Capabilities and current boundaries</h2>
+<h3>6.1 Current capabilities</h3>
+<table>
+<thead>
+<tr>
+<th>Capability</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Two pipelines</td>
+<td>V1 (coupled identity/outfit) and V2 (decoupled, multi-route, rerank + decision) run side by side.</td>
+</tr>
+<tr>
+<td>Local galleries</td>
+<td>Recursive scanning of any local image directory; multiple bundled demo galleries.</td>
+</tr>
+<tr>
+<td>Reference-driven query</td>
+<td>1–3 reference images; multi-angle fusion improves accuracy over a single shot.</td>
+</tr>
+<tr>
+<td>Region-level understanding</td>
+<td>Moves from whole-image comparison to character, face/hair, upper/lower clothing, shoes, and accessories.</td>
+</tr>
+<tr>
+<td>Multi-route retrieval &amp; rerank</td>
+<td>Identity / outfit-global / outfit-local routes + 6-term weighted rerank + decision.</td>
+</tr>
+<tr>
+<td>Offline operation</td>
+<td>Fully offline after one-time setup; bundled weights (~3 GB), HF cache (~1 GB), and pip wheels (~3 GB).</td>
+</tr>
+<tr>
+<td>Device flexibility</td>
+<td>Auto-detects CUDA GPU; falls back to CPU; per-stage device overrides for low-VRAM machines.</td>
+</tr>
+<tr>
+<td>Explainable output</td>
+<td>Boxes, masks, part masks, tags, matched regions, and score breakdowns per result.</td>
+</tr>
+</tbody>
+</table>
+<h3>6.2 Current boundaries</h3>
+<ul>
+<li>Built for anime / game CG character art (transparent sheets, event CG, card art, promos) rather than generic photos or product shots.</li>
+<li>A gallery with no detectable character instances yields nothing to index — check that the gallery holds character art, not backgrounds / UI.</li>
+<li>V2's CCIP identity route and WD14 tag verification depend on the <code>imgutils</code> backend; if it is absent, those signals silently degrade to zero rather than failing the run.</li>
+<li>Index rebuild is in-memory over changed files only, but FAISS has no incremental remove — any diff rebuilds all routes from the cached feature list (cheap relative to re-running detection/segmentation).</li>
+<li>The product assists review; final naming, archiving, and acceptance remain human decisions.</li>
+</ul>
+<hr />
+<h2>7. Environment and deployment</h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Requirement / behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Platform</td>
+<td>Windows 10 / 11 (64-bit) primary; macOS launch script provided.</td>
+</tr>
+<tr>
+<td>Python</td>
+<td>3.10 (bundled installer in the delivery package).</td>
+</tr>
+<tr>
+<td>Memory</td>
+<td>≥ 8 GB (16 GB recommended).</td>
+</tr>
+<tr>
+<td>Disk</td>
+<td>≥ 10 GB free for weights, cache, and wheels.</td>
+</tr>
+<tr>
+<td>Compute</td>
+<td>NVIDIA GPU optional — auto-detected, 5–10× faster; CPU fallback otherwise.</td>
+</tr>
+<tr>
+<td>Network</td>
+<td>None required — 100% offline after install.</td>
+</tr>
+<tr>
+<td>Launch (Windows)</td>
+<td><code>first_install.bat</code> once, then <code>start.bat</code> daily.</td>
+</tr>
+<tr>
+<td>Launch (macOS)</td>
+<td><code>first_install_macos.sh</code> once, then <code>start_macos.sh</code> daily.</td>
+</tr>
+<tr>
+<td>Configuration</td>
+<td>YAML merged with dataclass defaults: <code>config/default.yaml</code>, <code>config/demo.yaml</code>, <code>config/v2.yaml</code>.</td>
+</tr>
+<tr>
+<td>Bundled models</td>
+<td><code>models/groundingdino</code>, <code>models/sam2</code>, <code>models/eva02_clip</code> (+ <code>ELVA02-CLIP</code>); CCIP / WD14 via imgutils ONNX.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>8. Getting started (summary)</h2>
+<p>The full install/usage instructions live in the project's <code>README.txt</code>. In short:</p>
+<ol>
+<li><strong>One-time setup</strong> — run <code>first_install.bat</code> (Windows) / <code>first_install_macos.sh</code> (macOS). It checks Python, creates an isolated <code>venv</code>, installs all dependencies from the bundled <code>wheels/</code> offline, and tests critical imports.</li>
+<li><strong>Daily launch</strong> — run <code>start.bat</code> / <code>start_macos.sh</code>; the console logs appear, then a browser opens to the retrieval page automatically (~30–60 s).</li>
+<li><strong>In the UI</strong> — pick the pipeline (<strong>V2 recommended</strong>), pick or paste a gallery path, upload 1–3 reference images, click <strong>Build Index</strong> the first time a gallery is visited, then <strong>Run</strong>. Drag the <strong>Score &gt;</strong> slider to filter low-scoring candidates; click a hit card for the full detail view (mask, part parsing, WD14 tags).</li>
+</ol>
+<p>Programmatic use:</p>
+<pre><code class="language-python">from yx_retrieval.config import AppConfig
+from yx_retrieval.pipeline_v2 import RetrievalPipelineV2
+
+cfg = AppConfig.from_yaml(&quot;config/v2.yaml&quot;)
+pipe = RetrievalPipelineV2(cfg)
+pipe.build_index(&quot;OB13/&quot;)
+results = pipe.query([&quot;OB13/ele_char_alice_main.png&quot;], top_k=10)
+</code></pre>
+<hr />
+<h2>9. FAQ</h2>
+<p><strong>Does the whole index need to be rebuilt after adding images to the gallery?</strong></p>
+<p>No. V2 supports incremental synchronization: it detects added / removed / size-changed files, re-extracts only what changed, and updates the indexes. An unchanged gallery is a cheap no-op scan.</p>
+<p><strong>Can the gallery and indexes be copied to another machine?</strong></p>
+<p>Yes, when conditions are met. Stored paths are gallery-relative and stamps are file sizes, so an index copied alongside its gallery is reused as-is. Run a validation build after migration.</p>
+<p><strong>Is a GPU required?</strong></p>
+<p>No. A compatible NVIDIA GPU is used when available (5–10× faster); otherwise the system falls back to CPU. Check the first console log line — <code>[auto-detect] using device:</code> — to confirm which device was selected.</p>
+<p><strong>Why didn't the image I wanted appear in the results?</strong></p>
+<p>Lower the <strong>Score &gt;</strong> slider (e.g. from 0.5 to 0.3). If it still does not appear, V2 may not have recognized it; review the detection / parsing thresholds in the V2 config or contact support.</p>
+<p><strong>Will this replace asset-archiving staff?</strong></p>
+<p>No. It is better suited to candidate discovery, ranking, and explanation, letting people focus on business judgment, naming standards, and final confirmation.</p>
+<p><strong>How do I fully uninstall?</strong></p>
+<p>Delete the extracted directory. There are no registry or service residuals.</p>
+</main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'default',
+    flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' }
+  });
+</script>
+</body>
+</html>
+</body>
+</html>
