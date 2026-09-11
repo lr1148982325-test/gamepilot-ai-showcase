@@ -3,9 +3,10 @@ name: Sync showcases from GitLab
 # 定时轮询源工蜂仓库：docs/ 下的 html 有新增或内容变更时，自动提交到本仓库，
 # 从而触发 GitHub Pages 自动重建。
 # 同步范围：
-#   docs/    —— 展示页 HTML（自包含，不含外部素材；docs/assets 体积过大，不参与同步）
-#   scripts/ —— 落地页生成脚本与中文译文，保证 GitHub Pages 用的是最新脚本
-#   Readme.md —— 落地页分类来源（本仓库落地为 README.md）
+#   docs/*.html —— 展示页 HTML（自包含，不含外部素材；docs/assets 体积过大，不参与同步）
+#   docs/*.md   —— Markdown 源文档，落地页卡片文案以它为准
+#   scripts/    —— 落地页生成脚本与中文译文，保证 GitHub Pages 用的是最新脚本
+#   Readme.md   —— 落地页分类来源（本仓库落地为 README.md）
 on:
   schedule:
     # 每 30 分钟同步一次；需要更实时可改成 '*/5 * * * *'
@@ -38,11 +39,12 @@ jobs:
           git clone --depth 1 --branch master \
             "https://private:${GITLAB_TOKEN}@git.tencent.com/rdec/ai_show_cases.git" /tmp/src
 
-      - name: Refresh docs/*.html
+      - name: Refresh docs/ (html + markdown)
         run: |
           mkdir -p docs
-          rm -f docs/*.html          # 先清掉旧的，保证源仓库删除也能同步
-          cp /tmp/src/docs/*.html docs/
+          rm -f docs/*.html docs/*.md   # 先清掉旧的，保证源仓库删除也能同步
+          cp /tmp/src/docs/*.html docs/ 2>/dev/null || true
+          cp /tmp/src/docs/*.md docs/ 2>/dev/null || true
           echo "--- docs/ ---"
           ls -1 docs/
 
