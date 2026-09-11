@@ -2,10 +2,14 @@ name: Sync showcases from GitLab
 
 # 定时轮询源工蜂仓库：docs/ 下的 html 有新增或内容变更时，自动提交到本仓库，
 # 从而触发 GitHub Pages 自动重建。
+# 同步范围：
+#   docs/    —— 展示页 HTML（自包含，不含外部素材；docs/assets 体积过大，不参与同步）
+#   scripts/ —— 落地页生成脚本与中文译文，保证 GitHub Pages 用的是最新脚本
+#   Readme.md —— 落地页分类来源（本仓库落地为 README.md）
 on:
   schedule:
-    # 每小时(UTC)同步一次。想要更实时可改成：'*/5 * * * *'
-    - cron: '0 * * * *'
+    # 每 30 分钟同步一次；需要更实时可改成 '*/5 * * * *'
+    - cron: '*/30 * * * *'
   workflow_dispatch: {}      # 支持在 GitHub 网页上手动触发
 
 permissions:
@@ -42,6 +46,14 @@ jobs:
           echo "--- docs/ ---"
           ls -1 docs/
 
+      - name: Refresh scripts/ and Readme
+        run: |
+          mkdir -p scripts
+          rm -f scripts/*.py scripts/*.json
+          cp /tmp/src/scripts/*.py scripts/ 2>/dev/null || true
+          cp /tmp/src/scripts/*.json scripts/ 2>/dev/null || true
+          cp /tmp/src/Readme.md README.md
+
       - name: Generate landing page (docs/index.html)
         run: |
           python3 scripts/generate_index.py
@@ -50,7 +62,7 @@ jobs:
 
       - name: Commit & push if changed
         run: |
-          git add docs/
+          git add docs/ scripts/ README.md
           if [ -z "$(git status --porcelain)" ]; then
             echo "No changes to sync."
             exit 0

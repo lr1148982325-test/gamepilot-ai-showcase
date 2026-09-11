@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="referrer" content="no-referrer">
+<meta name="format-detection" content="telephone=no,email=no,address=no">
 <title>RDEC AI Showcases</title>
 <style>
 * { box-sizing: border-box; }
@@ -26,26 +30,83 @@ header.hero {
 }
 header.hero h1 { margin: 0 0 10px; font-size: 30px; font-weight: 700; }
 header.hero p { margin: 0; color: rgba(255,255,255,0.85); font-size: 15px; }
+.cat-nav {
+  margin: 0 0 20px;
+  font-size: 0;
+}
+.cat-nav a {
+  display: inline-block;
+  margin: 0 8px 8px 0;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  color: #4b5563;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color .12s ease, color .12s ease;
+}
+.cat-nav a:hover { border-color: #2563eb; color: #2563eb; }
+section.cat { margin-bottom: 40px; scroll-margin-top: 20px; }
+.cat-head {
+  margin: 0 0 14px;
+  font-size: 0;
+}
+.cat-head h2 {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0;
+  font-size: 19px;
+  font-weight: 700;
+  color: #111827;
+}
+.cat-count {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  background: #eef2f7;
+  border-radius: 999px;
+  padding: 2px 10px;
+}
 .grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 16px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin: 0 -8px;
 }
 .card {
+  position: relative;
+  display: -webkit-flex;
   display: flex;
+  -webkit-flex-direction: column;
   flex-direction: column;
+  width: 33.3333%;
+  width: calc(33.3333% - 16px);
+  margin: 0 8px 16px;
+  font-size: 16px;
   background: #fff;
   border: 1px solid #e5e7eb;
   border-radius: 12px;
-  padding: 20px 22px;
-  text-decoration: none;
-  color: inherit;
   transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
 }
 .card:hover {
   transform: translateY(-2px);
   border-color: #2563eb;
   box-shadow: 0 8px 20px rgba(37, 99, 235, 0.12);
+}
+.card-link {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 20px 22px;
+  text-decoration: none;
+  color: inherit;
 }
 .card h2 {
   margin: 0 0 8px;
@@ -54,6 +115,7 @@ header.hero p { margin: 0; color: rgba(255,255,255,0.85); font-size: 15px; }
   color: #111827;
   line-height: 1.35;
 }
+.card.has-lang h2 { padding-right: 96px; }
 .card .desc {
   margin: 0 0 4px;
   font-size: 14px;
@@ -66,11 +128,45 @@ header.hero p { margin: 0; color: rgba(255,255,255,0.85); font-size: 15px; }
   font-size: 14px;
   color: #2563eb;
 }
+.lang-tabs {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  z-index: 2;
+  display: block;
+  font-size: 0;
+  padding: 3px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  border: 1px solid #e5e7eb;
+  font-weight: 700;
+  line-height: 1;
+}
+.lang-tabs a {
+  display: inline-block;
+  margin-left: 2px;
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  color: #6b7280;
+  text-decoration: none;
+  cursor: pointer;
+}
+.lang-tabs a:hover { color: #111827; }
+.lang-tabs a.is-active { background: #2563eb; color: #fff; }
 footer {
   margin-top: 40px;
   text-align: center;
   color: #9ca3af;
   font-size: 13px;
+}
+@media (max-width: 900px) {
+  .card { width: 50%; width: calc(50% - 16px); }
+}
+@media (max-width: 620px) {
+  .card { width: 100%; width: calc(100% - 16px); }
+  .page { padding: 24px 14px 56px; }
+  header.hero { padding: 28px 22px; }
 }
 </style>
 </head>
@@ -78,106 +174,226 @@ footer {
 <div class="page">
   <header class="hero">
     <h1>RDEC AI Showcases</h1>
-    <p>AI 通用能力项展示 · 点击任意卡片在线浏览渲染后的页面</p>
+    <p>AI 通用能力项展示 · 点击任意卡片在线浏览渲染后的页面 · 支持中英文切换</p>
   </header>
 
-  <div class="grid">
-    <a class="card" href="3d-mesh-model-standalone_V1.html">
-      <h2>Image-to-3D Mesh Generation</h2>
-      <p class="desc">A Showcase-Driven Production Pipeline</p>
-      <span class="arrow">Open &rarr;</span>
-    </a>
-    <a class="card" href="3d-motion-model-standalone_V1.html">
-      <h2>Studio-Specific 3D Motion Generation</h2>
-      <p class="desc">The Armed-Aim Showcase · Kimodo-SOMA Fine-Tuning</p>
-      <span class="arrow">Open &rarr;</span>
-    </a>
-    <a class="card" href="3d-remesh-retopology-standalone_V1.html">
-      <h2>3D Retopology &amp; Decimation</h2>
-      <p class="desc">A collaboration — how commercial image-to-3D models and open-source remeshing tools performed against a high-poly, bad-topology asset.</p>
-      <span class="arrow">Open &rarr;</span>
-    </a>
-    <a class="card" href="Intelligent%20Character%20Asset%20Retrieval-standalone_V1.html">
-      <h2>From Reference Images to Explainable Local Asset Discovery</h2>
-      <p class="desc">A character, outfit, and local visual retrieval solution for anime and game CG assets</p>
-      <span class="arrow">Open &rarr;</span>
-    </a>
-    <a class="card" href="NIKKE%20Retrieval-standalone_V1.html">
-      <h2>NIKKE Retrieval (YX Retrieval): Offline Character &amp; Costume Retrieval for Game CG Assets</h2>
-      <p class="desc">Offline Character &amp; Costume Retrieval for Game CG Assets</p>
-      <span class="arrow">Open &rarr;</span>
-    </a>
-    <a class="card" href="ai_auditing-standalone_V1.html">
-      <h2>Game English Text AIGC Detection</h2>
-      <p class="desc">Evaluation &amp; Product Capability Report</p>
-      <span class="arrow">Open &rarr;</span>
-    </a>
-    <a class="card" href="ci-error-analysis-standalone_V1.html">
-      <h2>CI Error Analysis Service</h2>
-      <p class="desc">A reusable CI failure analysis capability for Studios · evidence-gated Agent triage</p>
-      <span class="arrow">Open &rarr;</span>
-    </a>
-    <a class="card" href="code-review-agent-standalone_V1.html">
-      <h2>Code Review Agent</h2>
-      <p class="desc">Multi-Perspective AI Code Review for Game Studios</p>
-      <span class="arrow">Open &rarr;</span>
-    </a>
-    <a class="card" href="figma2ue-standalone_V1.html">
-      <h2>Figma2UE</h2>
-      <p class="desc">Closing the Implementation Gap Between Figma Designs and Unreal UMG</p>
-      <span class="arrow">Open &rarr;</span>
-    </a>
-    <a class="card" href="figma2ue-standalone_V1_cn.html">
-      <h2>Figma2UE</h2>
-      <p class="desc">弥合 Figma 设计稿与 Unreal UMG 之间的实现鸿沟</p>
-      <span class="arrow">Open &rarr;</span>
-    </a>
-    <a class="card" href="figma2unity-standalone_V1.html">
-      <h2>Figma2Unity: A Deterministic Figma-to-Unity UI Pipeline</h2>
-      <span class="arrow">Open &rarr;</span>
-    </a>
-    <a class="card" href="figma2unity-standalone_V1_cn.html">
-      <h2>Figma2Unity：确定性的 Figma 到 Unity UI 还原管线</h2>
-      <span class="arrow">Open &rarr;</span>
-    </a>
-    <a class="card" href="jira-issue-triage-standalone_V1.html">
-      <h2>Jira Issue Triage with DevPilot</h2>
-      <p class="desc">Declarative Agents for Recurring Dev Workflows · dispatcher/worker fan-out</p>
-      <span class="arrow">Open &rarr;</span>
-    </a>
-    <a class="card" href="p4-merge-workflow-standalone_V1.html">
-      <h2>P4 Merge Workflow: A Staged, Spec-Driven Capability for Million-File Perforce Merges</h2>
-      <p class="desc">Turns a million-file Perforce merge into a repeatable GamePilot skill — detecting stream topology, syncing by content digest, and splitting resolves into path-disjoint, human-owned waves.</p>
-      <span class="arrow">Open &rarr;</span>
-    </a>
-    <a class="card" href="psd2prefab-standalone_V1.html">
-      <h2>PSD2Prefab</h2>
-      <p class="desc">Bridging the Game UI Implementation Gap Between Photoshop and Unity</p>
-      <span class="arrow">Open &rarr;</span>
-    </a>
-    <a class="card" href="psd2umg-standalone_V1.html">
-      <h2>PSD2UMG</h2>
-      <p class="desc">From Layer Organization and Asset Slicing to Unreal UMG</p>
-      <span class="arrow">Open &rarr;</span>
-    </a>
-    <a class="card" href="psd2umg-standalone_V1_cn.html">
-      <h2>PSD2UMG</h2>
-      <p class="desc">从图层组织与资源切分到 Unreal UMG</p>
-      <span class="arrow">Open &rarr;</span>
-    </a>
-    <a class="card" href="rd-knowledge-base-deepwiki-standalone_V1.html">
-      <h2>GamePilot R&amp;D Knowledge Base + DeepWiki: Turning Project Context into Reusable AI Capability</h2>
-      <p class="desc">DeepWiki converts a game codebase into a navigable technical wiki; the Knowledge Base then combines it with project documents into a permission-aware, reusable context supply for onboarding, coding, review, and QA workflows.</p>
-      <span class="arrow">Open &rarr;</span>
-    </a>
-    <a class="card" href="refmatch-standalone_V1.html">
-      <h2>RefMatch</h2>
-      <p class="desc">Reference-Driven 2D Asset Region Registration &amp; Stable Crop Workbench</p>
-      <span class="arrow">Open &rarr;</span>
-    </a>
-  </div>
+  <nav class="cat-nav">
+    <a href="#cat-0">程序 · 10</a>
+    <a href="#cat-1">知识库 · 1</a>
+    <a href="#cat-2">美术 · 4</a>
+    <a href="#cat-3">其他 · 1</a>
+  </nav>
+  <section class="cat" id="cat-0">
+    <div class="cat-head">
+      <h2>程序</h2>
+      <span class="cat-count">10 项</span>
+    </div>
+    <div class="grid">
+    <div class="card has-lang" data-en-title="From Reference Images to Explainable Local Asset Discovery" data-en-desc="A character, outfit, and local visual retrieval solution for anime and game CG assets" data-en-href="Intelligent%20Character%20Asset%20Retrieval-standalone_V1.html" data-cn-title="从参考图到可解释的本地资产检索" data-cn-desc="面向二次元与游戏 CG 资产的角色、服装与局部视觉检索方案：给出一到三张参考图，即可在本地资产库中定位相同角色或同款服装，并返回可解释的匹配依据。" data-cn-href="Intelligent%20Character%20Asset%20Retrieval-standalone_V1.html">
+      <div class="lang-tabs"><a href="#" data-lang="en">EN</a><a href="#" data-lang="cn">中文</a></div>
+      <a class="card-link" href="Intelligent%20Character%20Asset%20Retrieval-standalone_V1.html">
+        <h2 class="card-title">From Reference Images to Explainable Local Asset Discovery</h2>
+        <p class="desc">A character, outfit, and local visual retrieval solution for anime and game CG assets</p>
+        <span class="arrow">Open &rarr;</span>
+      </a>
+    </div>
+    <div class="card has-lang" data-en-title="Game English Text AIGC Detection" data-en-desc="Evaluation &amp; Product Capability Report" data-en-href="ai_auditing-standalone_V1.html" data-cn-title="游戏英文文本 AIGC 检测：评测与产品能力报告" data-cn-desc="报告综合两类证据：在标准化游戏文本数据集上对商用与开源检测产品的实测基准，以及供应商能力成熟度调研，为 Studio 选择 AIGC 检测方案提供依据。" data-cn-href="ai_auditing-standalone_V1.html">
+      <div class="lang-tabs"><a href="#" data-lang="en">EN</a><a href="#" data-lang="cn">中文</a></div>
+      <a class="card-link" href="ai_auditing-standalone_V1.html">
+        <h2 class="card-title">Game English Text AIGC Detection</h2>
+        <p class="desc">Evaluation &amp; Product Capability Report</p>
+        <span class="arrow">Open &rarr;</span>
+      </a>
+    </div>
+    <div class="card has-lang" data-en-title="CI Error Analysis Service" data-en-desc="A reusable CI failure analysis capability for Studios · evidence-gated Agent triage" data-en-href="ci-error-analysis-standalone_V1.html" data-cn-title="CI 失败归因服务" data-cn-desc="面向 Studio 的可复用 CI 失败分析能力：Jenkins 或蓝盾流水线失败时，服务先拉取构建日志交给 Agent 分析，只有在日志证据不足时才读取 Git / Perforce 源码上下文，输出可执行的归因结论。" data-cn-href="ci-error-analysis-standalone_V1.html">
+      <div class="lang-tabs"><a href="#" data-lang="en">EN</a><a href="#" data-lang="cn">中文</a></div>
+      <a class="card-link" href="ci-error-analysis-standalone_V1.html">
+        <h2 class="card-title">CI Error Analysis Service</h2>
+        <p class="desc">A reusable CI failure analysis capability for Studios · evidence-gated Agent triage</p>
+        <span class="arrow">Open &rarr;</span>
+      </a>
+    </div>
+    <div class="card has-lang" data-en-title="Code Review Agent" data-en-desc="Multi-Perspective AI Code Review for Game Studios" data-en-href="code-review-agent-standalone_V1.html" data-cn-title="Code Review Agent：面向游戏工作室的多视角 AI 代码评审" data-cn-desc="多数 AI 代码评审只会给出一个泛泛的意见：能发现缺失的判空，却漏掉网络同步问题。Code Review Agent 以多个视角并行评审同一个 diff，覆盖程序、玩法、性能与规范等不同关注点。" data-cn-href="code-review-agent-standalone_V1.html">
+      <div class="lang-tabs"><a href="#" data-lang="en">EN</a><a href="#" data-lang="cn">中文</a></div>
+      <a class="card-link" href="code-review-agent-standalone_V1.html">
+        <h2 class="card-title">Code Review Agent</h2>
+        <p class="desc">Multi-Perspective AI Code Review for Game Studios</p>
+        <span class="arrow">Open &rarr;</span>
+      </a>
+    </div>
+    <div class="card has-lang" data-en-title="Figma2UE" data-en-desc="Closing the Implementation Gap Between Figma Designs and Unreal UMG" data-en-href="figma2ue-standalone_V1.html" data-cn-title="Figma2UE" data-cn-desc="弥合 Figma 设计稿与 Unreal UMG 之间的实现鸿沟" data-cn-href="figma2ue-standalone_V1_cn.html">
+      <div class="lang-tabs"><a href="#" data-lang="en">EN</a><a href="#" data-lang="cn">中文</a></div>
+      <a class="card-link" href="figma2ue-standalone_V1.html">
+        <h2 class="card-title">Figma2UE</h2>
+        <p class="desc">Closing the Implementation Gap Between Figma Designs and Unreal UMG</p>
+        <span class="arrow">Open &rarr;</span>
+      </a>
+    </div>
+    <div class="card has-lang" data-en-title="Figma2Unity: A Deterministic Figma-to-Unity UI Pipeline" data-en-desc="" data-en-href="figma2unity-standalone_V1.html" data-cn-title="Figma2Unity：确定性的 Figma 到 Unity UI 还原管线" data-cn-desc="" data-cn-href="figma2unity-standalone_V1_cn.html">
+      <div class="lang-tabs"><a href="#" data-lang="en">EN</a><a href="#" data-lang="cn">中文</a></div>
+      <a class="card-link" href="figma2unity-standalone_V1.html">
+        <h2 class="card-title">Figma2Unity: A Deterministic Figma-to-Unity UI Pipeline</h2>
+        <p class="desc"></p>
+        <span class="arrow">Open &rarr;</span>
+      </a>
+    </div>
+    <div class="card has-lang" data-en-title="Jira Issue Triage with DevPilot" data-en-desc="Declarative Agents for Recurring Dev Workflows · dispatcher/worker fan-out" data-en-href="jira-issue-triage-standalone_V1.html" data-cn-title="基于 DevPilot 的 Jira 问题分诊：面向重复研发流程的声明式 Agent" data-cn-desc="每个工作室都有一堆没人愿意先看的缺陷报告。该方案用声明式 Agent 完成首轮分诊：阅读问题、判断是否与历史单据重复、收集必要证据，并给出初步结论与下一步建议。" data-cn-href="jira-issue-triage-standalone_V1.html">
+      <div class="lang-tabs"><a href="#" data-lang="en">EN</a><a href="#" data-lang="cn">中文</a></div>
+      <a class="card-link" href="jira-issue-triage-standalone_V1.html">
+        <h2 class="card-title">Jira Issue Triage with DevPilot</h2>
+        <p class="desc">Declarative Agents for Recurring Dev Workflows · dispatcher/worker fan-out</p>
+        <span class="arrow">Open &rarr;</span>
+      </a>
+    </div>
+    <div class="card has-lang" data-en-title="P4 Merge Workflow: A Staged, Spec-Driven Capability for Million-File Perforce Merges" data-en-desc="Turns a million-file Perforce merge into a repeatable GamePilot skill — detecting stream topology, syncing by content digest, and splitting resolves into path-disjoint, human-owned waves." data-en-href="p4-merge-workflow-standalone_V1.html" data-cn-title="P4 合并工作流：面向百万级文件 Perforce 合并的分阶段、规格驱动能力" data-cn-desc="维护 Unity 项目定制分支的长线运营工作室，需要周期性合入上游 dump（供应商快照、本地化分支或其他团队交付）。该能力把百万级文件的合并拆成可验证、可回滚、责任到人的多个波次。" data-cn-href="p4-merge-workflow-standalone_V1.html">
+      <div class="lang-tabs"><a href="#" data-lang="en">EN</a><a href="#" data-lang="cn">中文</a></div>
+      <a class="card-link" href="p4-merge-workflow-standalone_V1.html">
+        <h2 class="card-title">P4 Merge Workflow: A Staged, Spec-Driven Capability for Million-File Perforce Merges</h2>
+        <p class="desc">Turns a million-file Perforce merge into a repeatable GamePilot skill — detecting stream topology, syncing by content digest, and splitting resolves into path-disjoint, human-owned waves.</p>
+        <span class="arrow">Open &rarr;</span>
+      </a>
+    </div>
+    <div class="card has-lang" data-en-title="PSD2Prefab" data-en-desc="Bridging the Game UI Implementation Gap Between Photoshop and Unity" data-en-href="psd2prefab-standalone_V1.html" data-cn-title="PSD2Prefab：打通 Photoshop 与 Unity 之间的游戏 UI 实现鸿沟" data-cn-desc="当游戏 UI 进入实现阶段时，两端的产物通常都已就绪：美术完成了 Photoshop 中的 PSD/PSB，程序准备好了基础 Unity 工程。PSD2Prefab 把中间这段重复的还原工作标准化、自动化。" data-cn-href="psd2prefab-standalone_V1.html">
+      <div class="lang-tabs"><a href="#" data-lang="en">EN</a><a href="#" data-lang="cn">中文</a></div>
+      <a class="card-link" href="psd2prefab-standalone_V1.html">
+        <h2 class="card-title">PSD2Prefab</h2>
+        <p class="desc">Bridging the Game UI Implementation Gap Between Photoshop and Unity</p>
+        <span class="arrow">Open &rarr;</span>
+      </a>
+    </div>
+    <div class="card has-lang" data-en-title="PSD2UMG" data-en-desc="From Layer Organization and Asset Slicing to Unreal UMG" data-en-href="psd2umg-standalone_V1.html" data-cn-title="PSD2UMG" data-cn-desc="从图层组织与资源切分到 Unreal UMG" data-cn-href="psd2umg-standalone_V1_cn.html">
+      <div class="lang-tabs"><a href="#" data-lang="en">EN</a><a href="#" data-lang="cn">中文</a></div>
+      <a class="card-link" href="psd2umg-standalone_V1.html">
+        <h2 class="card-title">PSD2UMG</h2>
+        <p class="desc">From Layer Organization and Asset Slicing to Unreal UMG</p>
+        <span class="arrow">Open &rarr;</span>
+      </a>
+    </div>
+    </div>
+  </section>
+  <section class="cat" id="cat-1">
+    <div class="cat-head">
+      <h2>知识库</h2>
+      <span class="cat-count">1 项</span>
+    </div>
+    <div class="grid">
+    <div class="card has-lang" data-en-title="GamePilot R&amp;D Knowledge Base + DeepWiki: Turning Project Context into Reusable AI Capability" data-en-desc="DeepWiki converts a game codebase into a navigable technical wiki; the Knowledge Base then combines it with project documents into a permission-aware, reusable context supply for onboarding, coding, review, and QA workflows." data-en-href="rd-knowledge-base-deepwiki-standalone_V1.html" data-cn-title="GamePilot 研发知识库 + DeepWiki：把项目上下文变成可复用的 AI 能力" data-cn-desc="游戏研发知识很少集中在一处：架构藏在代码仓库里，环境搭建说明散落在 wiki，设计意图分散在文档与表格中。DeepWiki 把代码库转成可检索的技术 wiki，知识库再结合项目文档形成带权限的上下文供给。" data-cn-href="rd-knowledge-base-deepwiki-standalone_V1.html">
+      <div class="lang-tabs"><a href="#" data-lang="en">EN</a><a href="#" data-lang="cn">中文</a></div>
+      <a class="card-link" href="rd-knowledge-base-deepwiki-standalone_V1.html">
+        <h2 class="card-title">GamePilot R&amp;D Knowledge Base + DeepWiki: Turning Project Context into Reusable AI Capability</h2>
+        <p class="desc">DeepWiki converts a game codebase into a navigable technical wiki; the Knowledge Base then combines it with project documents into a permission-aware, reusable context supply for onboarding, coding, review, and QA workflows.</p>
+        <span class="arrow">Open &rarr;</span>
+      </a>
+    </div>
+    </div>
+  </section>
+  <section class="cat" id="cat-2">
+    <div class="cat-head">
+      <h2>美术</h2>
+      <span class="cat-count">4 项</span>
+    </div>
+    <div class="grid">
+    <div class="card has-lang" data-en-title="Image-to-3D Mesh Generation" data-en-desc="A Showcase-Driven Production Pipeline" data-en-href="3d-mesh-model-standalone_V1.html" data-cn-title="图片生成 3D Mesh 模型：以 Showcase 驱动的生产管线" data-cn-desc="与 Funcom 的合作始于一个真实的生产问题：概念板并不是干净的 3D 规格说明，单次图片生成 3D 的结果也不够稳定，无法直接交付美术。该管线用 Showcase 驱动的方式，把反复试错收敛为可复用的生产流程。" data-cn-href="3d-mesh-model-standalone_V1.html">
+      <div class="lang-tabs"><a href="#" data-lang="en">EN</a><a href="#" data-lang="cn">中文</a></div>
+      <a class="card-link" href="3d-mesh-model-standalone_V1.html">
+        <h2 class="card-title">Image-to-3D Mesh Generation</h2>
+        <p class="desc">A Showcase-Driven Production Pipeline</p>
+        <span class="arrow">Open &rarr;</span>
+      </a>
+    </div>
+    <div class="card has-lang" data-en-title="Studio-Specific 3D Motion Generation" data-en-desc="The Armed-Aim Showcase · Kimodo-SOMA Fine-Tuning" data-en-href="3d-motion-model-standalone_V1.html" data-cn-title="面向工作室的 3D 动作生成：GST 持枪瞄准 Showcase" data-cn-desc="通用文生动作模型能生成看起来合理的动作，但游戏工作室的要求更窄也更硬：动作必须遵守角色骨骼契约、匹配特定的持枪姿态，并能直接进入生产。该 Showcase 记录了 GST 的微调与落地路径。" data-cn-href="3d-motion-model-standalone_V1.html">
+      <div class="lang-tabs"><a href="#" data-lang="en">EN</a><a href="#" data-lang="cn">中文</a></div>
+      <a class="card-link" href="3d-motion-model-standalone_V1.html">
+        <h2 class="card-title">Studio-Specific 3D Motion Generation</h2>
+        <p class="desc">The Armed-Aim Showcase · Kimodo-SOMA Fine-Tuning</p>
+        <span class="arrow">Open &rarr;</span>
+      </a>
+    </div>
+    <div class="card has-lang" data-en-title="3D Retopology &amp; Decimation" data-en-desc="A collaboration — how commercial image-to-3D models and open-source remeshing tools performed against a high-poly, bad-topology asset." data-en-href="3d-remesh-retopology-standalone_V1.html" data-cn-title="3D 重拓扑与减面：面向糟糕拓扑游戏资产的工具级探索" data-cn-desc="永星（Nikke）的合作暴露出一个反复出现的生产需求：游戏资产往往是高面数且拓扑糟糕的网格，复用前必须重拓扑、减面并整理 UV。该文档对比了商用图片生成 3D 模型与开源重网格工具的实际表现。" data-cn-href="3d-remesh-retopology-standalone_V1.html">
+      <div class="lang-tabs"><a href="#" data-lang="en">EN</a><a href="#" data-lang="cn">中文</a></div>
+      <a class="card-link" href="3d-remesh-retopology-standalone_V1.html">
+        <h2 class="card-title">3D Retopology &amp; Decimation</h2>
+        <p class="desc">A collaboration — how commercial image-to-3D models and open-source remeshing tools performed against a high-poly, bad-topology asset.</p>
+        <span class="arrow">Open &rarr;</span>
+      </a>
+    </div>
+    <div class="card has-lang" data-en-title="RefMatch" data-en-desc="Reference-Driven 2D Asset Region Registration &amp; Stable Crop Workbench" data-en-href="refmatch-standalone_V1.html" data-cn-title="RefMatch：以参考图驱动的 2D 资产区域配准与稳定裁剪工作台" data-cn-desc="在游戏 2D 美术流程中，裁剪的难点从来不是下刀，而是对齐：同一主体常以成百上千技能帧、风险图与合规图、不同分辨率的 UI 与主视觉等多种形态存在。RefMatch 只需在参考图上标注一次 ROI，即可自动配准、稳定裁剪并给出质量评分。" data-cn-href="refmatch-standalone_V1.html">
+      <div class="lang-tabs"><a href="#" data-lang="en">EN</a><a href="#" data-lang="cn">中文</a></div>
+      <a class="card-link" href="refmatch-standalone_V1.html">
+        <h2 class="card-title">RefMatch</h2>
+        <p class="desc">Reference-Driven 2D Asset Region Registration &amp; Stable Crop Workbench</p>
+        <span class="arrow">Open &rarr;</span>
+      </a>
+    </div>
+    </div>
+  </section>
+  <section class="cat" id="cat-3">
+    <div class="cat-head">
+      <h2>其他</h2>
+      <span class="cat-count">1 项</span>
+    </div>
+    <div class="grid">
+    <div class="card has-lang" data-en-title="NIKKE Retrieval (YX Retrieval): Offline Character &amp; Costume Retrieval for Game CG Assets" data-en-desc="Offline Character &amp; Costume Retrieval for Game CG Assets" data-en-href="NIKKE%20Retrieval-standalone_V1.html" data-cn-title="NIKKE Retrieval（YX Retrieval）：游戏 CG 资产的离线角色与服装检索" data-cn-desc="NIKKE Retrieval 是 YX Retrieval 角色/服装检索引擎的完全离线封装版本（Python 包 yx-retrieval v0.1.0），模型与依赖随包分发，无需联网即可在资产库中检索相同角色与服装。" data-cn-href="NIKKE%20Retrieval-standalone_V1.html">
+      <div class="lang-tabs"><a href="#" data-lang="en">EN</a><a href="#" data-lang="cn">中文</a></div>
+      <a class="card-link" href="NIKKE%20Retrieval-standalone_V1.html">
+        <h2 class="card-title">NIKKE Retrieval (YX Retrieval): Offline Character &amp; Costume Retrieval for Game CG Assets</h2>
+        <p class="desc">Offline Character &amp; Costume Retrieval for Game CG Assets</p>
+        <span class="arrow">Open &rarr;</span>
+      </a>
+    </div>
+    </div>
+  </section>
 
-  <footer>RDEC AI Showcases · 由工蜂 Pages 自动部署 · 共 19 项</footer>
+  <footer>RDEC AI Showcases · 由工蜂 Pages 自动部署 · 共 16 项</footer>
 </div>
+<script>
+(function () {
+  var STORE_KEY = 'rdec-showcase-lang';
+  function read() {
+    try { return localStorage.getItem(STORE_KEY) === 'cn' ? 'cn' : 'en'; } catch (e) { return 'en'; }
+  }
+  function write(lang) {
+    try { localStorage.setItem(STORE_KEY, lang); } catch (e) {}
+  }
+  function pick(card, lang) {
+    var hasEn = !!card.getAttribute('data-en-href');
+    var hasCn = !!card.getAttribute('data-cn-href');
+    if (lang === 'cn' && hasCn) return 'cn';
+    return hasEn ? 'en' : 'cn';
+  }
+  function apply(card, lang) {
+    var use = pick(card, lang);
+    var title = card.getAttribute('data-' + use + '-title') || '';
+    var desc = card.getAttribute('data-' + use + '-desc') || '';
+    card.querySelector('.card-link').setAttribute('href', card.getAttribute('data-' + use + '-href') || '#');
+    card.querySelector('.card-title').textContent = title;
+    var descEl = card.querySelector('.desc');
+    descEl.textContent = desc;
+    descEl.style.display = desc ? '' : 'none';
+    var tabs = card.querySelectorAll('.lang-tabs a');
+    for (var i = 0; i < tabs.length; i++) {
+      var on = tabs[i].getAttribute('data-lang') === use;
+      if (on) { tabs[i].classList.add('is-active'); } else { tabs[i].classList.remove('is-active'); }
+    }
+  }
+  var cards = document.querySelectorAll('.card[data-en-href], .card[data-cn-href]');
+  var pref = read();
+  for (var i = 0; i < cards.length; i++) {
+    (function (card) {
+      var tabs = card.querySelectorAll('.lang-tabs a');
+      for (var j = 0; j < tabs.length; j++) {
+        tabs[j].addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          var lang = this.getAttribute('data-lang');
+          write(lang);
+          for (var k = 0; k < cards.length; k++) { apply(cards[k], lang); }
+        });
+      }
+      apply(card, pref);
+    })(cards[i]);
+  }
+})();
+</script>
 </body>
 </html>

@@ -1,0 +1,55 @@
+{
+  "_comment": "落地页中文文案。有中文 Markdown（*_cn.md）的能力项以 Markdown 为准；没有中文文档的由 AI 翻译并存到这里，key 为能力项名小写。新增文档时在此补充即可。",
+  "3d-mesh-model": {
+    "title": "图片生成 3D Mesh 模型：以 Showcase 驱动的生产管线",
+    "desc": "与 Funcom 的合作始于一个真实的生产问题：概念板并不是干净的 3D 规格说明，单次图片生成 3D 的结果也不够稳定，无法直接交付美术。该管线用 Showcase 驱动的方式，把反复试错收敛为可复用的生产流程。"
+  },
+  "3d-motion-model": {
+    "title": "面向工作室的 3D 动作生成：GST 持枪瞄准 Showcase",
+    "desc": "通用文生动作模型能生成看起来合理的动作，但游戏工作室的要求更窄也更硬：动作必须遵守角色骨骼契约、匹配特定的持枪姿态，并能直接进入生产。该 Showcase 记录了 GST 的微调与落地路径。"
+  },
+  "3d-remesh-retopology": {
+    "title": "3D 重拓扑与减面：面向糟糕拓扑游戏资产的工具级探索",
+    "desc": "永星（Nikke）的合作暴露出一个反复出现的生产需求：游戏资产往往是高面数且拓扑糟糕的网格，复用前必须重拓扑、减面并整理 UV。该文档对比了商用图片生成 3D 模型与开源重网格工具的实际表现。"
+  },
+  "ai_auditing": {
+    "title": "游戏英文文本 AIGC 检测：评测与产品能力报告",
+    "desc": "报告综合两类证据：在标准化游戏文本数据集上对商用与开源检测产品的实测基准，以及供应商能力成熟度调研，为 Studio 选择 AIGC 检测方案提供依据。"
+  },
+  "ci-error-analysis": {
+    "title": "CI 失败归因服务",
+    "desc": "面向 Studio 的可复用 CI 失败分析能力：Jenkins 或蓝盾流水线失败时，服务先拉取构建日志交给 Agent 分析，只有在日志证据不足时才读取 Git / Perforce 源码上下文，输出可执行的归因结论。"
+  },
+  "code-review-agent": {
+    "title": "Code Review Agent：面向游戏工作室的多视角 AI 代码评审",
+    "desc": "多数 AI 代码评审只会给出一个泛泛的意见：能发现缺失的判空，却漏掉网络同步问题。Code Review Agent 以多个视角并行评审同一个 diff，覆盖程序、玩法、性能与规范等不同关注点。"
+  },
+  "intelligent character asset retrieval": {
+    "title": "从参考图到可解释的本地资产检索",
+    "desc": "面向二次元与游戏 CG 资产的角色、服装与局部视觉检索方案：给出一到三张参考图，即可在本地资产库中定位相同角色或同款服装，并返回可解释的匹配依据。"
+  },
+  "jira-issue-triage": {
+    "title": "基于 DevPilot 的 Jira 问题分诊：面向重复研发流程的声明式 Agent",
+    "desc": "每个工作室都有一堆没人愿意先看的缺陷报告。该方案用声明式 Agent 完成首轮分诊：阅读问题、判断是否与历史单据重复、收集必要证据，并给出初步结论与下一步建议。"
+  },
+  "nikke retrieval": {
+    "title": "NIKKE Retrieval（YX Retrieval）：游戏 CG 资产的离线角色与服装检索",
+    "desc": "NIKKE Retrieval 是 YX Retrieval 角色/服装检索引擎的完全离线封装版本（Python 包 yx-retrieval v0.1.0），模型与依赖随包分发，无需联网即可在资产库中检索相同角色与服装。"
+  },
+  "p4-merge-workflow": {
+    "title": "P4 合并工作流：面向百万级文件 Perforce 合并的分阶段、规格驱动能力",
+    "desc": "维护 Unity 项目定制分支的长线运营工作室，需要周期性合入上游 dump（供应商快照、本地化分支或其他团队交付）。该能力把百万级文件的合并拆成可验证、可回滚、责任到人的多个波次。"
+  },
+  "psd2prefab": {
+    "title": "PSD2Prefab：打通 Photoshop 与 Unity 之间的游戏 UI 实现鸿沟",
+    "desc": "当游戏 UI 进入实现阶段时，两端的产物通常都已就绪：美术完成了 Photoshop 中的 PSD/PSB，程序准备好了基础 Unity 工程。PSD2Prefab 把中间这段重复的还原工作标准化、自动化。"
+  },
+  "rd-knowledge-base-deepwiki": {
+    "title": "GamePilot 研发知识库 + DeepWiki：把项目上下文变成可复用的 AI 能力",
+    "desc": "游戏研发知识很少集中在一处：架构藏在代码仓库里，环境搭建说明散落在 wiki，设计意图分散在文档与表格中。DeepWiki 把代码库转成可检索的技术 wiki，知识库再结合项目文档形成带权限的上下文供给。"
+  },
+  "refmatch": {
+    "title": "RefMatch：以参考图驱动的 2D 资产区域配准与稳定裁剪工作台",
+    "desc": "在游戏 2D 美术流程中，裁剪的难点从来不是下刀，而是对齐：同一主体常以成百上千技能帧、风险图与合规图、不同分辨率的 UI 与主视觉等多种形态存在。RefMatch 只需在参考图上标注一次 ROI，即可自动配准、稳定裁剪并给出质量评分。"
+  }
+}
