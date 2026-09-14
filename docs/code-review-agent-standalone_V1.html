@@ -4,7 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Code Review Agent — Showcase</title>
+<meta name="rdec-source-md" content="code-review-agent_V1.md">
+<meta name="rdec-source-hash" content="sha256:56c1ef01729cbb99">
+<meta name="rdec-generated-by" content="scripts/build_docs.py">
 <style>
+
 :root {
   --bg: #f6f8fb;
   --card: #ffffff;
@@ -58,7 +62,7 @@ main.content {
   padding: 40px 44px;
   box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
 }
-main.content h1, main.content h2, main.content h3 {
+main.content h1, main.content h2, main.content h3, main.content h4 {
   color: #111827;
   line-height: 1.35;
   scroll-margin-top: 24px;
@@ -71,6 +75,7 @@ main.content h2 {
   border-bottom: 2px solid var(--border);
 }
 main.content h3 { font-size: 19px; margin: 28px 0 12px; }
+main.content h4 { font-size: 16px; margin: 22px 0 10px; }
 main.content p { margin: 0 0 16px; }
 main.content strong { color: #111827; }
 main.content a { color: var(--accent); text-decoration: none; }
@@ -93,6 +98,22 @@ main.content code {
   font-size: 0.9em;
   color: #b91c1c;
 }
+main.content pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 16px 18px;
+  border-radius: 10px;
+  overflow-x: auto;
+  margin: 0 0 18px;
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+main.content pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+}
 main.content img {
   max-width: 100%;
   height: auto;
@@ -103,6 +124,7 @@ main.content img {
 main.content p[align="center"] { text-align: center; }
 main.content p[align="center"] img { display: inline-block; }
 main.content em { color: var(--muted); }
+main.content hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
 
 table {
   width: 100%;
@@ -129,25 +151,20 @@ th {
 tbody tr:nth-child(even) { background: #fafbfd; }
 td img { margin: 0 auto; }
 
-.video-section {
-  margin-top: 40px;
-  padding: 28px 32px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+.video-wrap {
+  margin: 20px 0 24px;
 }
-.video-section h2 {
-  margin: 0 0 8px;
-  font-size: 22px;
-  color: #111827;
-}
-.video-section p { color: var(--muted); margin: 0 0 18px; }
-.video-section video {
+.video-wrap video {
   width: 100%;
   border-radius: 10px;
   box-shadow: 0 4px 16px rgba(15, 23, 42, 0.12);
   background: #000;
+}
+.video-wrap p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+  text-align: center;
 }
 
 @media (max-width: 720px) {
@@ -157,6 +174,7 @@ td img { margin: 0 auto; }
   main.content { padding: 24px 18px; }
   th, td { padding: 8px 10px; }
 }
+
 </style>
 </head>
 <body>
@@ -166,7 +184,6 @@ td img { margin: 0 auto; }
     <p class="subtitle">Multi-Perspective AI Code Review for Game Studios</p>
   </header>
   <main class="content">
-<h1>Code Review Agent: Multi-Perspective AI Code Review for Game Studios</h1>
 <p>Most AI code review produces one generalist opinion about a diff. That opinion is usually shallow in a predictable way: it notices a missing null check, misses the replication desync, and suggests renaming a variable. A single reviewer with a single prompt has a single bar, and everything gets flattened to it.</p>
 <p>This agent reviews every change from <strong>four independent perspectives at once</strong> — logic, security, quality, and performance. Each is a separate subagent with its own focus, its own confidence bar, and its own explicit list of things it refuses to report. They run in parallel and their findings are merged, so a bug that is both a crash and an exploit is reported once with the higher severity, and a style nitpick is reported by nobody.</p>
 <h2>1. Where it fits</h2>

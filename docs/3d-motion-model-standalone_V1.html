@@ -4,7 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Studio-Specific 3D Motion Generation — Showcase</title>
+<meta name="rdec-source-md" content="3d-motion-model_V1.md">
+<meta name="rdec-source-hash" content="sha256:b57820abf273aefa">
+<meta name="rdec-generated-by" content="scripts/build_docs.py">
 <style>
+
 :root {
   --bg: #f6f8fb;
   --card: #ffffff;
@@ -41,7 +45,7 @@ header.hero {
 }
 header.hero h1 {
   margin: 0 0 14px;
-  font-size: 30px;
+  font-size: 32px;
   line-height: 1.3;
   font-weight: 700;
   letter-spacing: -0.01em;
@@ -58,11 +62,12 @@ main.content {
   padding: 40px 44px;
   box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
 }
-main.content h1, main.content h2, main.content h3 {
+main.content h1, main.content h2, main.content h3, main.content h4 {
   color: #111827;
   line-height: 1.35;
   scroll-margin-top: 24px;
 }
+main.content h1 { font-size: 26px; margin: 0 0 20px; }
 main.content h2 {
   font-size: 24px;
   margin: 40px 0 16px;
@@ -70,6 +75,7 @@ main.content h2 {
   border-bottom: 2px solid var(--border);
 }
 main.content h3 { font-size: 19px; margin: 28px 0 12px; }
+main.content h4 { font-size: 16px; margin: 22px 0 10px; }
 main.content p { margin: 0 0 16px; }
 main.content strong { color: #111827; }
 main.content a { color: var(--accent); text-decoration: none; }
@@ -92,6 +98,22 @@ main.content code {
   font-size: 0.9em;
   color: #b91c1c;
 }
+main.content pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 16px 18px;
+  border-radius: 10px;
+  overflow-x: auto;
+  margin: 0 0 18px;
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+main.content pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+}
 main.content img {
   max-width: 100%;
   height: auto;
@@ -102,6 +124,7 @@ main.content img {
 main.content p[align="center"] { text-align: center; }
 main.content p[align="center"] img { display: inline-block; }
 main.content em { color: var(--muted); }
+main.content hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
 
 table {
   width: 100%;
@@ -128,46 +151,41 @@ th {
 tbody tr:nth-child(even) { background: #fafbfd; }
 td img { margin: 0 auto; }
 
-.video-section {
-  margin-top: 40px;
-  padding: 28px 32px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+.video-wrap {
+  margin: 20px 0 24px;
 }
-.video-section h2 {
-  margin: 0 0 8px;
-  font-size: 22px;
-  color: #111827;
-}
-.video-section p { color: var(--muted); margin: 0 0 18px; }
-.video-section video {
+.video-wrap video {
   width: 100%;
   border-radius: 10px;
   box-shadow: 0 4px 16px rgba(15, 23, 42, 0.12);
   background: #000;
 }
+.video-wrap p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+  text-align: center;
+}
 
 @media (max-width: 720px) {
   .page { padding: 20px 12px 60px; }
   header.hero { padding: 28px 22px; }
-  header.hero h1 { font-size: 22px; }
+  header.hero h1 { font-size: 24px; }
   main.content { padding: 24px 18px; }
   th, td { padding: 8px 10px; }
 }
+
 </style>
 </head>
 <body>
 <div class="page">
   <header class="hero">
     <h1>Studio-Specific 3D Motion Generation</h1>
-    <p class="subtitle">The Armed-Aim Showcase · Kimodo-SOMA Fine-Tuning</p>
+    <p class="subtitle">The GST Armed-Aim Showcase</p>
   </header>
   <main class="content">
-<h1>Studio-Specific 3D Motion Generation: The Armed-Aim Showcase</h1>
 <p>Generic text-to-motion models can produce plausible movement, but a game studio needs something narrower and harder: motions must preserve a character’s skeleton contract, match a specific armed stance and gesture sequence, use the requested clip length, keep planted feet stable, and return as FBX or Unreal animation assets that can be reviewed and reused.</p>
-<p>The collaboration adapted Kimodo to 16 standing rifle/AIM actions. Three fine-tuning rounds moved the project from a working conversion chain to semantically aligned motions and then to explicitly optimized foot stability.</p>
+<p>The GST collaboration adapted Kimodo to 16 standing rifle/AIM actions. Three fine-tuning rounds moved the project from a working conversion chain to semantically aligned motions and then to explicitly optimized foot stability.</p>
 <table>
 <thead>
 <tr>
@@ -176,6 +194,10 @@ td img { margin: 0 auto; }
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>Studio collaboration</td>
+<td>GST</td>
+</tr>
 <tr>
 <td>Base motion model</td>
 <td>Kimodo-SOMA-RP with the SOMA77 intermediate skeleton</td>
@@ -400,7 +422,6 @@ td img { margin: 0 auto; }
 <p>The next dataset should add locomotion, turns, crouching, prone motion, cover peeks, hit reactions, and compound gestures such as walking while signaling stop or advance. Each clip should keep a short observable English description—ideally beginning with “A person…” and describing prop, posture, limb trajectory, order, and return pose rather than only intent.</p>
 <p>Pilot acceptance should combine semantic correctness, timing, foot stability, retarget quality, animation-edit burden, and in-engine review. The current 16-action result is a focused proof that targeted fine-tuning can solve a studio-specific motion family; broader action and character coverage remains the next validation step.</p>
   </main>
-
 </div>
 </body>
 </html>

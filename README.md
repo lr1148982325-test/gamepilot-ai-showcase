@@ -11,7 +11,10 @@
 - 文档关联的二进制资源（图片、视频等），统一保存到文档所在目录下的assets文件夹内
 - 同一能力项需要中文版时，在英文名后追加`_cn`（如`figma2ue-standalone_V1_cn.html`）；落地页会自动把中英文版本合并为一张卡片，并在打开的页面右上角提供中英文切换，无需单独展示两份
 - 落地页卡片文案以Markdown源文档为准（首个标题 + 其后第一段）；暂无中文Markdown的能力项，中文文案取自`scripts/translations.json`（AI译文，可人工维护），补齐中文文档后自动以文档为准
-- HTML 展示页由 Markdown 自动生成，无需手工维护：`python3 scripts/build_docs.py` 会为没有 HTML 的 Markdown 生成 `xxx-standalone_V1.html`；再次修改 Markdown 后重新执行同一命令，脚本按内容哈希检测到变更并重建对应 HTML（CI 部署时会自动执行）
+- HTML 展示页由 Markdown 自动生成，无需手工维护：`python3 scripts/build_docs.py` 会为没有 HTML 的 Markdown 生成 `xxx-standalone_V1.html`；再次修改 Markdown（或替换文档里引用的图片/视频）后重新执行同一命令，脚本按「Markdown 内容哈希 + 素材指纹」检测到变更并重建对应 HTML（CI 部署时会自动执行）
+  - **图片**直接以内嵌 base64（data URI）写进 HTML；**视频/音频**由于浏览器对 `data:` URL 有约 2 MB 的硬限制（Chrome 等），脚本改为把它们的 base64 放进页面末尾的 `<script>`，页面加载后由 JS 转成 Blob URL 喂给 `<video src>`，从而绕过该限制——单页面 HTML 可任意大，几百 MB 的视频也能在浏览器里直接播放（启动会更慢、占用更多内存）
+  - `--max-inline-mb N`：单个素材超过 N MB 不再内联，保留相对路径（默认 **0 = 不限制**）。`.gitlab-ci.yml` 部署时传 `--max-inline-mb 25`，保证单个 HTML < 100 MB（Git 单文件硬限），超限素材由 `cp -r docs/assets public/` 在 Pages 站点提供兜底
+  - `--no-inline`：不内联，全部保留相对路径引用
   - `--check`：只检查不写文件，存在缺失或过期页面时退出码 1
   - `--force`：按 Markdown 重新生成全部页面（用于接管历史手工维护的 HTML）
   - `--adopt`：给历史手工页面补上指纹，之后即可增量检测

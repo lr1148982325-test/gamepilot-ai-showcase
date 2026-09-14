@@ -15,19 +15,67 @@
     python3 scripts/build_docs.py --force     # 全部按 Markdown 重新生成（接管人工维护页面）
     python3 scripts/build_docs.py --adopt     # 给人工维护页面补上指纹，之后即可增量检测
 
+素材策略（默认：图片内联 + 视频外链）
+  图片  转成 base64 data URI 写进 HTML，页面自包含，不依赖 docs/assets 目录，
+        单独双击打开、或在落地页中点进去都能看到。
+  视频  默认不内联，改写成「--video-base-url 前缀 + 相对路径」的绝对外链，
+        例如 --video-base-url https://host/ai_show_cases/ 会把
+        assets/video/psd2umg.mp4 变成 https://host/ai_show_cases/assets/video/psd2umg.mp4。
+        这样页面只有几 MB（秒开）、视频能边下边播、仓库不用背 798M 素材，
+        同一份 HTML 放到工蜂 Pages 和 GitHub Pages 上都能播。
+        不传该参数时视频保留相对路径，本地双击打开照常能播（docs/assets 就在旁边）。
+
+    --video-base-url URL   视频外链前缀（站点根），也可用环境变量 VIDEO_BASE_URL 传入
+    --inline-video         强制把视频也 base64 内联（页面会变成几百 MB，慎用）
+    --max-inline-mb N      单个素材超过 N MB 就不再内联，保留相对路径（默认 0 = 不限）
+    --no-inline            完全不内联，图片和视频都保留相对路径引用
+
 说明：没有指纹的 HTML 被视为人工维护页面，默认不会覆盖；
       需要让它跟随 Markdown 自动更新时，用 --force 重新生成一次即可。
 """
 from __future__ import annotations
 
 import argparse
+import base64
 import hashlib
 import html
+import mimetypes
+import os
 import re
 import sys
 from pathlib import Path
 
-DOCS_DIR = Path("docs")
+ROOT = Path(__file__).resolve().parent.parent
+DOCS_DIR = ROOT / "docs"
+
+DEFAULT_MAX_INLINE_MB = 0.0  # 0 表示不限制；可指定具体 MB 数
+
+# 需要内联/参与指纹的素材后缀
+MEDIA_RE = re.compile(r"\.(?:png|jpe?g|gif|svg|webp|bmp|mp4|webm|mov|ogg)$", re.IGNORECASE)
+MD_ASSET_RE = re.compile(
+    r"[A-Za-z0-9._/\-]+\.(?:png|jpe?g|gif|svg|webp|bmp|mp4|webm|mov|ogg)", re.IGNORECASE
+)
+HTML_ASSET_RE = re.compile(
+    r'(?P<attr>(?:src|poster|data-src))\s*=\s*(?P<q>["\'])(?P<url>(?:(?!\2).)+)\2',
+    re.IGNORECASE,
+)
+REMOTE_RE = re.compile(r"^(?:[a-zA-Z][a-zA-Z0-9+.\-]*://|//|#|data:|mailto:)", re.IGNORECASE)
+# 视频类后缀：默认不内联，走外链
+VIDEO_EXT_RE = re.compile(r"\.(?:mp4|webm|mov|m4v|ogg)$", re.IGNORECASE)
+# 重写素材 URL 时要覆盖的属性（比内联多一个 href，覆盖 md 里没转成 <video> 的裸链接）
+REWRITE_ATTR_RE = re.compile(
+    r'(?P<attr>(?:src|poster|data-src|href))\s*=\s*(?P<q>["\'])(?P<url>(?:(?!\2).)+)\2',
+    re.IGNORECASE,
+)
+
+EXTRA_MIME = {
+    ".svg": "image/svg+xml",
+    ".mp4": "video/mp4",
+    ".webm": "video/webm",
+    ".mov": "video/quicktime",
+    ".ogg": "video/ogg",
+    ".webp": "image/webp",
+}
 
 # psd2umg_V1.md / psd2umg_V1_cn.md
 MD_FILE_RE = re.compile(r"^(?P<base>.+?)_V(?P<ver>\d+)(?P<lang>_cn)?\.md$", re.IGNORECASE)
@@ -359,8 +407,12 @@ def render_builtin(text: str) -> str:
     return "\n".join(out)
 
 
-def convert_videos(text: str) -> str:
-    """把独占一行的视频链接转成 <video> 播放器。"""
+def convert_videos(text: str, preload: str = "metadata") -> str:
+    """把独占一行的视频链接转成 <video> 播放器。
+
+    preload="none"：首屏不拉取视频数据（外置素材时用，页面秒开）；
+    preload="metadata"：读取首帧元信息（内联素材时用，数据已在页面里）。
+    """
     lines = text.splitlines()
     out = []
     for line in lines:
@@ -370,7 +422,7 @@ def convert_videos(text: str) -> str:
             url = m.group("url")
             caption = f"<p>{escape(label)}</p>" if label else ""
             out.append(
-                f'<div class="video-wrap"><video controls playsinline preload="metadata" '
+                f'<div class="video-wrap"><video controls playsinline preload="{preload}" '
                 f'src="{escape(url)}"></video>{caption}</div>'
             )
         else:
@@ -378,8 +430,8 @@ def convert_videos(text: str) -> str:
     return "\n".join(out)
 
 
-def render_markdown(text: str) -> str:
-    text = convert_videos(text)
+def render_markdown(text: str, preload: str = "metadata") -> str:
+    text = convert_videos(text, preload)
     try:
         import markdown  # type: ignore
 
@@ -389,6 +441,151 @@ def render_markdown(text: str) -> str:
         )
     except ImportError:
         return render_builtin(text)
+
+
+# ---------------------------------------------------------- 素材：内联与指纹
+
+
+def empty_stats() -> dict:
+    return {"inlined": [], "skipped": [], "missing": [], "linked": []}
+
+
+def resolve_asset(url: str, base_dir: Path) -> Path | None:
+    """把页面里的素材路径解析成本地文件；远程/内嵌/找不到都返回 None。"""
+    if not url or REMOTE_RE.match(url):
+        return None
+    if not MEDIA_RE.search(url):
+        return None
+    for candidate in (base_dir / url, ROOT / url.lstrip("/")):
+        if candidate.is_file():
+            return candidate
+    return None
+
+
+def asset_mime(path: Path) -> str:
+    return (
+        EXTRA_MIME.get(path.suffix.lower())
+        or mimetypes.guess_type(str(path))[0]
+        or "application/octet-stream"
+    )
+
+
+def human_mb(size: int) -> str:
+    return f"{size / 1024 / 1024:.1f} MB"
+
+
+def to_data_uri(path: Path) -> str:
+    encoded = base64.b64encode(path.read_bytes()).decode("ascii")
+    return f"data:{asset_mime(path)};base64,{encoded}"
+
+
+def join_video_url(base: str, url: str) -> str:
+    rel = url[2:] if url.startswith("./") else url
+    return base.rstrip("/") + "/" + rel.lstrip("/")
+
+
+def rewrite_video_urls(body_html: str, video_base: str | None, stats: dict) -> str:
+    """把页面里的相对视频路径改写成绝对外链。
+
+    视频不内联 → 页面只有几 MB（秒开）、视频边下边播、仓库不用背 798M 素材，
+    同一份 HTML 放到工蜂 Pages 和 GitHub Pages 上都能播。
+    """
+    if not video_base:
+        return body_html
+
+    def replace(match: re.Match) -> str:
+        url = match.group("url")
+        if REMOTE_RE.match(url) or not VIDEO_EXT_RE.search(url):
+            return match.group(0)
+        absolute = join_video_url(video_base, url)
+        stats["linked"].append(url)
+        return (
+            f'{match.group("attr")}={match.group("q")}'
+            f"{html.escape(absolute, quote=True)}{match.group('q')}"
+        )
+
+    return REWRITE_ATTR_RE.sub(replace, body_html)
+
+
+def inline_assets(
+    body_html: str,
+    base_dir: Path,
+    max_bytes: int | None,
+    stats: dict,
+    inline_video: bool = False,
+) -> str:
+    """把 HTML 中的本地图片/视频转成 data URI / Blob，生成自包含页面。
+
+    图片直接 data URI。视频默认不内联（inline_video=False），保留外链/相对路径；
+    只有显式加 --inline-video 时才走 Blob 注入：视频/音频放到页面末尾的 <script> 里，
+    浏览器加载后由 JS 转成 Blob URL 喂给 <video src>——这样能绕开浏览器对 data: URL
+    的 2 MB 上限，几百 MB 的视频也能在 Chrome/Safari 自包含页面里直接播放。
+    """
+    media_payload: list[tuple[str, str, str]] = []  # (key, base64, mime)
+    next_id = [0]
+
+    def replace(match: re.Match) -> str:
+        url = match.group("url")
+        attr = match.group("attr")
+        path = resolve_asset(url, base_dir)
+        if path is None:
+            if MEDIA_RE.search(url) and not REMOTE_RE.match(url):
+                stats["missing"].append(url)
+            return match.group(0)
+        # 视频默认不内联：此处提前返回，避免把几百 MB 读进来做 base64
+        if not inline_video and VIDEO_EXT_RE.search(path.name):
+            stats["linked"].append(url)
+            return match.group(0)
+        size = path.stat().st_size
+        if max_bytes is not None and size > max_bytes:
+            stats["skipped"].append((url, size))
+            return match.group(0)
+        try:
+            b64 = base64.b64encode(path.read_bytes()).decode("ascii")
+            mime = asset_mime(path)
+        except OSError:
+            stats["missing"].append(url)
+            return match.group(0)
+        stats["inlined"].append((url, size))
+        if attr.lower() == "src" and mime.split("/", 1)[0] in ("video", "audio"):
+            key = f"rdec-m{next_id[0]}"
+            next_id[0] += 1
+            media_payload.append((key, b64, mime))
+            return f'data-inline-media="{key}"'
+        return f'{attr}={match.group("q")}data:{mime};base64,{b64}{match.group("q")}'
+
+    body = HTML_ASSET_RE.sub(replace, body_html)
+    if media_payload:
+        entries = ",".join(f'{k}:{{b64:"{b}",mime:"{m}"}}' for k, b, m in media_payload)
+        script = (
+            "\n<script>(function(){"
+            "var M={" + entries + "};"
+            "Object.keys(M).forEach(function(k){"
+              "var d=M[k];"
+              "var bin=atob(d.b64);"
+              "var u8=new Uint8Array(bin.length);"
+              "for(var i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);"
+              "var blob=new Blob([u8],{type:d.mime});"
+              "var url=URL.createObjectURL(blob);"
+              "document.querySelectorAll('[data-inline-media=\"'+k+'\"]')"
+                ".forEach(function(el){el.src=url;el.removeAttribute('data-inline-media');});"
+              "});"
+            "})();</script>"
+        )
+        body += script
+    return body
+
+
+def assets_signature(text: str, base_dir: Path) -> str:
+    """素材指纹：素材文件变了（内容/替换）也要触发重建。"""
+    items = {}
+    for token in MD_ASSET_RE.findall(text):
+        path = resolve_asset(token, base_dir)
+        if path is None:
+            continue
+        st = path.stat()
+        items[str(path)] = f"{st.st_size}:{st.st_mtime_ns}"
+    return "\n".join(f"{k}={items[k]}" for k in sorted(items))
 
 
 # ------------------------------------------------------------ 渲染：页面元数据
@@ -447,6 +644,28 @@ def build_page(md_name: str, lang: str, h1: str, subtitle: str, body_html: str, 
         .replace("__SOURCE_MD__", escape(md_name))
         .replace("__SOURCE_HASH__", digest)
     )
+
+
+def render_page(
+    md_name: str,
+    lang: str,
+    h1: str,
+    subtitle: str,
+    body_text: str,
+    digest: str,
+    max_bytes: int,
+    do_inline: bool,
+    stats: dict,
+    video_base: str = "",
+    inline_video: bool = False,
+) -> str:
+    # 视频外链/相对路径时不预加载（首屏零字节）；只有内联视频才读首帧元信息
+    preload = "metadata" if (do_inline and inline_video) else "none"
+    body = render_markdown(body_text, preload)
+    body = rewrite_video_urls(body, video_base, stats)
+    if do_inline:
+        body = inline_assets(body, DOCS_DIR, max_bytes, stats, inline_video)
+    return build_page(md_name, lang, h1, subtitle, body, digest)
 
 
 # ------------------------------------------------------------------ 主流程
@@ -512,7 +731,28 @@ def main() -> None:
     parser.add_argument("--force", action="store_true", help="按 Markdown 重新生成所有页面（含人工维护页面）")
     parser.add_argument("--adopt", action="store_true", help="给无指纹的页面补指纹，不改动正文")
     parser.add_argument("--quiet", action="store_true", help="只输出结果统计")
+    parser.add_argument(
+        "--max-inline-mb",
+        type=float,
+        default=DEFAULT_MAX_INLINE_MB,
+        help="单个素材内联上限（MB），0 表示不限制（默认）。"
+        "超过则保留相对路径引用",
+    )
+    parser.add_argument("--no-inline", action="store_true", help="不内联素材，全部保留相对路径引用")
+    parser.add_argument(
+        "--video-base-url",
+        default=os.environ.get("VIDEO_BASE_URL", ""),
+        help="视频外链前缀（站点根），如 https://host/ai_show_cases/；"
+        "也可用环境变量 VIDEO_BASE_URL 传入。不传则视频保留相对路径",
+    )
+    parser.add_argument(
+        "--inline-video",
+        action="store_true",
+        help="把视频也 base64 内联进 HTML（页面会变成几百 MB，默认不内联）",
+    )
     args = parser.parse_args()
+    max_bytes = int(args.max_inline_mb * 1024 * 1024) if args.max_inline_mb > 0 else None
+    video_base = (args.video_base_url or "").strip()
 
     if not DOCS_DIR.is_dir():
         print(f"错误：找不到 {DOCS_DIR} 目录", file=sys.stderr)
@@ -520,6 +760,7 @@ def main() -> None:
 
     index = existing_html_index()
     created, updated, fresh, manual, pending = [], [], [], [], []
+    assets_stats = empty_stats()
 
     for md_path in sorted(DOCS_DIR.glob("*.md")):
         m = MD_FILE_RE.match(md_path.name)
@@ -527,17 +768,26 @@ def main() -> None:
             continue
         base, version, lang = m.group("base"), m.group("ver"), ("cn" if m.group("lang") else "en")
         raw = md_path.read_bytes()
-        digest = sha256_short(raw)
+        md_text = raw.decode("utf-8", errors="replace")
+        # 素材也计入指纹：图片/视频被替换后同样会触发重建
+        # 素材策略也计入指纹：改了外链前缀 / 内联开关同样会触发重建
+        digest = sha256_short(
+            raw
+            + b"\n@@assets@@\n"
+            + assets_signature(md_text, DOCS_DIR).encode("utf-8")
+            + b"\n@@media@@\n"
+            + f"{video_base}|{int(args.inline_video)}|{args.max_inline_mb:g}".encode("utf-8")
+        )
         target = resolve_target(base, version, lang, index)
 
-        h1, subtitle, body_text = extract_hero(raw.decode("utf-8", errors="replace"))
+        h1, subtitle, body_text = extract_hero(md_text)
         text, current_hash = read_fingerprint(target)
 
         if text is None:  # 还没有 HTML：直接生成
             if args.check:
                 pending.append(f"{md_path.name} → {target.name}（缺失）")
                 continue
-            page = build_page(md_path.name, lang, h1, subtitle, render_markdown(body_text), digest)
+            page = render_page(md_path.name, lang, h1, subtitle, body_text, digest, max_bytes, not args.no_inline, assets_stats, video_base, args.inline_video)
             target.write_text(page, encoding="utf-8")
             created.append(target.name)
             continue
@@ -549,7 +799,7 @@ def main() -> None:
                 label += "，md 比 html 新"
             label += "）"
             if args.force:
-                page = build_page(md_path.name, lang, h1, subtitle, render_markdown(body_text), digest)
+                page = render_page(md_path.name, lang, h1, subtitle, body_text, digest, max_bytes, not args.no_inline, assets_stats, video_base, args.inline_video)
                 target.write_text(page, encoding="utf-8")
                 updated.append(f"{target.name}（已接管重建）")
             elif args.adopt:
@@ -569,7 +819,11 @@ def main() -> None:
             pending.append(f"{target.name}（源 {md_path.name} 已更新）")
             continue
 
-        page = build_page(md_path.name, lang, h1, subtitle, render_markdown(body_text), digest)
+        page = render_page(
+            md_path.name, lang, h1, subtitle, body_text, digest,
+            max_bytes, not args.no_inline, assets_stats,
+            video_base, args.inline_video,
+        )
         target.write_text(page, encoding="utf-8")
         updated.append(target.name)
 
@@ -587,6 +841,24 @@ def main() -> None:
             f"完成：新建 {len(created)}，更新 {len(updated)}，"
             f"最新 {len(fresh)}，人工维护跳过 {len(manual)}"
         )
+        inlined_size = sum(size for _, size in assets_stats["inlined"])
+        linked = sorted(set(assets_stats["linked"]))
+        limit_desc = "无限制" if args.max_inline_mb == 0 else f"{args.max_inline_mb:g} MB"
+        print(
+            f"素材：内联 {len(assets_stats['inlined'])} 个（{human_mb(inlined_size)}），"
+            f"视频外链/引用 {len(linked)} 个，内联上限 {limit_desc}，"
+            f"未内联 {len(assets_stats['skipped'])} 个，"
+            f"文件缺失 {len(set(assets_stats['missing']))} 个"
+        )
+        if linked:
+            if video_base:
+                print(f"视频：外链前缀 {video_base}")
+            else:
+                print("视频：保留相对路径（未设置 --video-base-url，部署到 GitHub 会 404）")
+        for url, size in assets_stats["skipped"]:
+            print(f"  ! 超过内联上限，保留相对路径：{url}（{human_mb(size)}）")
+        for url in sorted(set(assets_stats["missing"])):
+            print(f"  ! 找不到素材文件：{url}")
         if pending:
             print("待处理：")
             for item in pending:

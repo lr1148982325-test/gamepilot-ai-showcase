@@ -4,8 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Jira Issue Triage with DevPilot — Showcase</title>
+<meta name="rdec-source-md" content="jira-issue-triage_V1.md">
+<meta name="rdec-source-hash" content="sha256:66d8b0c6102ff36e">
+<meta name="rdec-generated-by" content="scripts/build_docs.py">
 <style>
-::root {
+
+:root {
   --bg: #f6f8fb;
   --card: #ffffff;
   --text: #1f2937;
@@ -58,11 +62,12 @@ main.content {
   padding: 40px 44px;
   box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
 }
-main.content h1, main.content h2, main.content h3 {
+main.content h1, main.content h2, main.content h3, main.content h4 {
   color: #111827;
   line-height: 1.35;
   scroll-margin-top: 24px;
 }
+main.content h1 { font-size: 26px; margin: 0 0 20px; }
 main.content h2 {
   font-size: 24px;
   margin: 40px 0 16px;
@@ -70,6 +75,7 @@ main.content h2 {
   border-bottom: 2px solid var(--border);
 }
 main.content h3 { font-size: 19px; margin: 28px 0 12px; }
+main.content h4 { font-size: 16px; margin: 22px 0 10px; }
 main.content p { margin: 0 0 16px; }
 main.content strong { color: #111827; }
 main.content a { color: var(--accent); text-decoration: none; }
@@ -84,20 +90,6 @@ main.content blockquote {
   border-radius: 0 8px 8px 0;
   color: #374151;
 }
-main.content pre {
-  background: #0f172a;
-  color: #e2e8f0;
-  padding: 16px 18px;
-  border-radius: 10px;
-  overflow-x: auto;
-  font-size: 0.9rem;
-  line-height: 1.6;
-}
-main.content pre code {
-  background: none;
-  color: inherit;
-  padding: 0;
-}
 main.content code {
   font-family: "SF Mono", SFMono-Regular, ui-monospace, Menlo, Consolas, monospace;
   background: var(--code-bg);
@@ -105,6 +97,22 @@ main.content code {
   border-radius: 5px;
   font-size: 0.9em;
   color: #b91c1c;
+}
+main.content pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 16px 18px;
+  border-radius: 10px;
+  overflow-x: auto;
+  margin: 0 0 18px;
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+main.content pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
 }
 main.content img {
   max-width: 100%;
@@ -116,6 +124,7 @@ main.content img {
 main.content p[align="center"] { text-align: center; }
 main.content p[align="center"] img { display: inline-block; }
 main.content em { color: var(--muted); }
+main.content hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
 
 table {
   width: 100%;
@@ -142,6 +151,22 @@ th {
 tbody tr:nth-child(even) { background: #fafbfd; }
 td img { margin: 0 auto; }
 
+.video-wrap {
+  margin: 20px 0 24px;
+}
+.video-wrap video {
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.12);
+  background: #000;
+}
+.video-wrap p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+  text-align: center;
+}
+
 @media (max-width: 720px) {
   .page { padding: 20px 12px 60px; }
   header.hero { padding: 28px 22px; }
@@ -149,16 +174,16 @@ td img { margin: 0 auto; }
   main.content { padding: 24px 18px; }
   th, td { padding: 8px 10px; }
 }
+
 </style>
 </head>
 <body>
 <div class="page">
   <header class="hero">
     <h1>Jira Issue Triage with DevPilot</h1>
-    <p class="subtitle">Declarative Agents for Recurring Dev Workflows · dispatcher/worker fan-out</p>
+    <p class="subtitle">Declarative Agents for Recurring Dev Workflows</p>
   </header>
   <main class="content">
-<h1>Jira Issue Triage with DevPilot: Declarative Agents for Recurring Dev Workflows</h1>
 <p>Every studio has a queue nobody wants: incoming bug reports that need a first pass. Someone must read each one, work out whether it is a duplicate of something filed last week, gather the obvious evidence, guess the likely owner, and write that down. It is unskilled relative to the people doing it, it is never urgent enough to schedule, and it silently sets the ceiling on how fast real bugs get fixed.</p>
 <p>DevPilot automates that first pass. It is a <strong>generic agent runtime</strong> — a single process that turns webhooks and cron ticks into durable, sandboxed agent runs — and Jira triage is its most developed application. The design bet worth paying attention to: an agent is a <strong>folder of YAML, Markdown, and JSON Schema</strong>, not code. Adding a new automation means writing a playbook and an output contract, not shipping a TypeScript module.</p>
 <h2>1. Where the effort actually goes</h2>

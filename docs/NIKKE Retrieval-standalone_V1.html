@@ -3,7 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>NIKKE Retrieval (YX Retrieval): Offline Character &amp; Costume Retrieval for Game CG Assets — Showcase</title>
+<title>NIKKE Retrieval (YX Retrieval) — Showcase</title>
+<meta name="rdec-source-md" content="NIKKE Retrieval_V1.md">
+<meta name="rdec-source-hash" content="sha256:bac41924e8916e79">
+<meta name="rdec-generated-by" content="scripts/build_docs.py">
 <style>
 
 :root {
@@ -27,7 +30,11 @@ body {
   line-height: 1.7;
   font-size: 16px;
 }
-.page { max-width: 1080px; margin: 0 auto; padding: 48px 24px 80px; }
+.page {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+}
 header.hero {
   background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 55%, #3b82f6 100%);
   color: #fff;
@@ -43,13 +50,10 @@ header.hero h1 {
   font-weight: 700;
   letter-spacing: -0.01em;
 }
-header.hero .subtitle { margin: 0; color: rgba(255,255,255,0.92); font-size: 16px; }
-header.hero .note {
-  margin: 18px 0 0;
-  padding-top: 16px;
-  border-top: 1px solid rgba(255,255,255,0.25);
-  color: rgba(255,255,255,0.78);
-  font-size: 14px;
+header.hero .subtitle {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 15px;
 }
 main.content {
   background: var(--card);
@@ -58,30 +62,24 @@ main.content {
   padding: 40px 44px;
   box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
 }
+main.content h1, main.content h2, main.content h3, main.content h4 {
+  color: #111827;
+  line-height: 1.35;
+  scroll-margin-top: 24px;
+}
+main.content h1 { font-size: 26px; margin: 0 0 20px; }
 main.content h2 {
   font-size: 24px;
   margin: 40px 0 16px;
   padding-bottom: 10px;
   border-bottom: 2px solid var(--border);
-  color: #111827;
-  line-height: 1.35;
-  scroll-margin-top: 24px;
 }
-main.content h3 { font-size: 19px; margin: 28px 0 12px; color: #111827; line-height: 1.35; }
+main.content h3 { font-size: 19px; margin: 28px 0 12px; }
+main.content h4 { font-size: 16px; margin: 22px 0 10px; }
 main.content p { margin: 0 0 16px; }
 main.content strong { color: #111827; }
 main.content a { color: var(--accent); text-decoration: none; }
 main.content a:hover { text-decoration: underline; }
-main.content a.download-link {
-  display: inline-block;
-  margin-top: 6px;
-  padding: 8px 16px;
-  background: var(--accent);
-  color: #fff;
-  border-radius: 8px;
-  font-weight: 600;
-}
-main.content a.download-link:hover { text-decoration: none; opacity: 0.92; }
 main.content ul, main.content ol { margin: 0 0 16px; padding-left: 24px; }
 main.content li { margin: 6px 0; }
 main.content blockquote {
@@ -100,15 +98,22 @@ main.content code {
   font-size: 0.9em;
   color: #b91c1c;
 }
-main.content pre.codeblock {
+main.content pre {
   background: #0f172a;
   color: #e2e8f0;
   padding: 16px 18px;
   border-radius: 10px;
-  overflow: auto;
-  margin: 16px 0;
+  overflow-x: auto;
+  margin: 0 0 18px;
+  font-size: 13.5px;
+  line-height: 1.6;
 }
-main.content pre.codeblock code { background: none; color: inherit; padding: 0; }
+main.content pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+}
 main.content img {
   max-width: 100%;
   height: auto;
@@ -116,68 +121,58 @@ main.content img {
   box-shadow: 0 4px 16px rgba(15, 23, 42, 0.12);
   display: block;
 }
-main.content figure.figure {
-  margin: 24px 0;
-  text-align: center;
-}
-main.content figure.figure img { margin: 0 auto; }
-main.content figure.figure figcaption {
-  margin-top: 10px;
-  font-size: 13px;
-  color: var(--muted);
-}
+main.content p[align="center"] { text-align: center; }
+main.content p[align="center"] img { display: inline-block; }
 main.content em { color: var(--muted); }
-main.content video {
-  width: 100%;
-  max-width: 100%;
-  border-radius: 12px;
-  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.16);
-  background: #000;
-  display: block;
-}
-.video-wrap { margin: 24px 0; }
-pre.mermaid {
-  background: #fbfcfe;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 20px;
-  overflow: auto;
-  text-align: center;
-  margin: 24px 0;
-}
-main.content .table-wrap {
-  margin: 18px 0 22px;
-  overflow-x: auto;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-}
-main.content table {
+main.content hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+
+table {
   width: 100%;
   border-collapse: collapse;
+  margin: 18px 0 20px;
   font-size: 15px;
   background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
 }
-main.content th, main.content td {
-  border-bottom: 1px solid var(--border);
-  padding: 11px 14px;
+th, td {
+  border: 1px solid var(--border);
+  padding: 10px 14px;
   text-align: left;
   vertical-align: top;
 }
-main.content thead th {
-  background: #f8fafc;
-  font-weight: 600;
+th {
+  background: #f1f5f9;
   color: #111827;
-  border-bottom: 2px solid var(--border);
+  font-weight: 600;
   white-space: nowrap;
 }
-main.content tbody tr:nth-child(even) { background: #fafbfc; }
-main.content tbody tr:last-child td { border-bottom: none; }
-main.content td code { white-space: nowrap; }
-@media (max-width: 640px) {
-  .page { padding: 24px 12px 48px; }
+tbody tr:nth-child(even) { background: #fafbfd; }
+td img { margin: 0 auto; }
+
+.video-wrap {
+  margin: 20px 0 24px;
+}
+.video-wrap video {
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.12);
+  background: #000;
+}
+.video-wrap p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+  text-align: center;
+}
+
+@media (max-width: 720px) {
+  .page { padding: 20px 12px 60px; }
   header.hero { padding: 28px 22px; }
-  main.content { padding: 24px 18px; }
   header.hero h1 { font-size: 24px; }
+  main.content { padding: 24px 18px; }
+  th, td { padding: 8px 10px; }
 }
 
 </style>
@@ -188,8 +183,7 @@ main.content td code { white-space: nowrap; }
     <h1>NIKKE Retrieval (YX Retrieval)</h1>
     <p class="subtitle">Offline Character &amp; Costume Retrieval for Game CG Assets</p>
   </header>
-<main class="content">
-<h1>NIKKE Retrieval (YX Retrieval): Offline Character &amp; Costume Retrieval for Game CG Assets</h1>
+  <main class="content">
 <blockquote>
 <p>An offline, local-first image retrieval system that finds the same character or the same outfit across a game-art gallery from one to three reference images — built around anime / game CG assets (NIKKE), with explainable, region-level results.</p>
 </blockquote>
@@ -297,7 +291,7 @@ main.content td code { white-space: nowrap; }
 <hr />
 <h2>4. System architecture and data flow</h2>
 <p>The product is a local browser interface talking to a local application service, which drives a visual-processing pipeline, builds retrieval indexes, and reads/writes only local data directories.</p>
-<pre class="mermaid">flowchart TB
+<pre><code class="language-mermaid">flowchart TB
     U[Local browser UI&lt;br/&gt;app.html] --&gt;|Select gallery / upload 1-3 references| W[Flask web app&lt;br/&gt;web_app.py]
     W --&gt; P[Pipeline: detect · segment · parse · encode]
     P --&gt; I[Multi-route FAISS indexes&lt;br/&gt;identity / outfit-global / outfit-local]
@@ -307,19 +301,19 @@ main.content td code { white-space: nowrap; }
     G --&gt; S[Incremental sync&lt;br/&gt;size-stamp diff]
     S --&gt; I
     C[Local cache &amp;amp; feature store&lt;br/&gt;data/indices · results] --- I
-</pre>
+</code></pre>
 <p>By default the service listens only on the local machine and is opened through a local browser. It is a local, single-machine tool — not an internet service or multi-user platform, and should not be exposed to the public network.</p>
 <hr />
 <h2>5. Retrieval pipeline</h2>
 <p>Both versions share the same front-end orchestration (<code>RetrievalPipeline</code> for V1, <code>RetrievalPipelineV2</code> for V2) and can run in the same Python process, even sharing the same EVA02-CLIP weights file.</p>
 <h3>5.1 V1 — 4-stage coupled pipeline</h3>
-<pre class="mermaid">flowchart LR
+<pre><code class="language-mermaid">flowchart LR
     A[Gallery / reference image] --&gt; B[Detection&lt;br/&gt;GroundingDINO]
     B --&gt; C[Segmentation&lt;br/&gt;SAM2 full mask]
     C --&gt; D[Feature&lt;br/&gt;EVA02-CLIP multi-slot + HSV colour]
     D --&gt; E[FAISS HNSW retrieval&lt;br/&gt;+ multi-reference fusion]
     E --&gt; F[Ranked results]
-</pre>
+</code></pre>
 <ol>
 <li><strong>Detection (GroundingDINO)</strong> — locates character bounding boxes from the prompt <code>character . person</code>, with NMS and a large-box re-check that splits multi-character KV / banner crops by head detections.</li>
 <li><strong>Segmentation (SAM2)</strong> — produces a full instance mask per box; overlapping masks are merged by IoU / containment / center-distance heuristics tuned for crowd scenes.</li>
@@ -327,7 +321,7 @@ main.content td code { white-space: nowrap; }
 <li><strong>Retrieval (FAISS HNSW)</strong> — cosine-similarity search over an <code>hnsw_flat</code> index (<code>m = 32</code>, <code>ef_construction = 200</code>, <code>ef_search = 128</code>); multiple references are fused with a geometric-mean ensemble (<code>prototype_weight = 0.6</code>, <code>max_ref_weight = 0.4</code>, up to 3 references).</li>
 </ol>
 <h3>5.2 V2 — 7-stage decoupled pipeline (recommended)</h3>
-<pre class="mermaid">flowchart LR
+<pre><code class="language-mermaid">flowchart LR
     A[Gallery / 1-3 references] --&gt; B[Detect + Segment&lt;br/&gt;or alpha fast-path]
     B --&gt; C[Parse&lt;br/&gt;AnimeParser / geometric]
     C --&gt; D[Encode&lt;br/&gt;identity · outfit-global · outfit-local&lt;br/&gt;+ colour/LBP/exposure descriptors]
@@ -336,7 +330,7 @@ main.content td code { white-space: nowrap; }
     F --&gt; G[6-term rerank&lt;br/&gt;identity · tag · outfit-global · outfit-local · colour · texture · exposure]
     G --&gt; H[Decision&lt;br/&gt;same-char / same-outfit + WD14 tag verify]
     H --&gt; I[Explainable results]
-</pre>
+</code></pre>
 <p>New relative to V1:</p>
 <ul>
 <li><strong>Parse (stage 2b)</strong> — semantic part-parsing via <code>AnimeParser</code> (imgutils-backed) with a geometric fallback; estimates face / hair / half-body / hand / pose regions so identity and outfit can be measured on the right pixels.</li>
@@ -517,17 +511,7 @@ results = pipe.query([&quot;OB13/ele_char_alice_main.png&quot;], top_k=10)
 <p>No. It is better suited to candidate discovery, ranking, and explanation, letting people focus on business judgment, naming standards, and final confirmation.</p>
 <p><strong>How do I fully uninstall?</strong></p>
 <p>Delete the extracted directory. There are no registry or service residuals.</p>
-</main>
+  </main>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-<script>
-  mermaid.initialize({
-    startOnLoad: true,
-    theme: 'default',
-    flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' }
-  });
-</script>
-</body>
-</html>
 </body>
 </html>
