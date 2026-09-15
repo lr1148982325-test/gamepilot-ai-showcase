@@ -56,11 +56,13 @@ jobs:
           cp /tmp/src/scripts/*.json scripts/ 2>/dev/null || true
           cp /tmp/src/Readme.md README.md
 
-      - name: Generate landing page (docs/index.html)
+      - name: Generate landing page (docs/index.html) & inject lang switch
         run: |
           python3 scripts/generate_index.py
-          cp public/index.html docs/index.html
-          echo "--- index generated ---"
+          # public/ 下的页面已注入右上角中英文切换条，整份覆盖回 docs/
+          cp public/*.html docs/
+          echo "--- index generated & lang switch injected ---"
+          ls -1 docs/
 
       - name: Commit & push if changed
         run: |
