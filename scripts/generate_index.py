@@ -482,7 +482,11 @@ def load_translations():
 
 
 def group_files(files):
-    """按能力项分组：同名的中英文版本并为一组，且只保留最高版本（V1/V2/...）。"""
+    """按能力项分组：同名的中英文版本并为一组，且只保留最高版本（V1/V2/...）。
+
+    分组键统一小写，避免同一能力项因文件名大小写不一致（如 refMatch-standalone_V1.html
+    与 refmatch-standalone_V1.html）被拆成两张孤立卡片。
+    """
     groups = {}
     for name in files:
         m = FILE_RE.match(name)
@@ -494,7 +498,8 @@ def group_files(files):
             base = name[:-5] if name.lower().endswith(".html") else name
             version = 0
             lang = "en"
-        group = groups.setdefault(base, {"base": base, "version": version, "files": {}})
+        key = base.lower()
+        group = groups.setdefault(key, {"base": base, "version": version, "files": {}})
         if version > group["version"]:  # 发现更高版本，丢弃低版本的语言副本
             group["version"] = version
             group["files"] = {}
@@ -534,7 +539,7 @@ def load_categories():
             base = HTML_NAME_RE.sub("", name)
             if not base:
                 continue
-            mapping[base] = category
+            mapping[base.lower()] = category
             if category not in order:
                 order.append(category)
     return mapping, order
@@ -582,7 +587,7 @@ def build_sections(items, category_map, category_order):
     """按 Readme 中的分类把卡片分块渲染，返回 (sections_html, nav_html)。"""
     buckets = {}
     for item in items:
-        category = category_map.get(item["base"], FALLBACK_CATEGORY)
+        category = category_map.get(item["base"].lower(), FALLBACK_CATEGORY)
         buckets.setdefault(category, []).append(item)
 
     # 先按 CATEGORY_PRIORITY 排，其次沿用 README 出现顺序
@@ -725,7 +730,7 @@ def main():
     PUBLIC_DIR.mkdir(parents=True, exist_ok=True)
     OUTPUT.write_text(page, encoding="utf-8")
     unknown = sum(
-        1 for item in items if item["base"] not in category_map
+        1 for item in items if item["base"].lower() not in category_map
     )
     print(f"已生成 {OUTPUT}：共 {len(items)} 个 showcase")
     if unknown:
