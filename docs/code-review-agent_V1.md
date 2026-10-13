@@ -113,3 +113,7 @@ The service orchestrates; the CLI reviews. The same reviewer definitions run in 
 
 **Where should a studio start?**
 One repo, advisory comments, two tracks. Then write down the conventions your seniors repeat in review — that step improves precision more than anything else.
+
+## 7. Demo Video
+
+**[Watch the complete Code Review Agent demo →](assets/video/AI-Code-Review-Demo.mp4)**

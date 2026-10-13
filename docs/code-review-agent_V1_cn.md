@@ -113,3 +113,7 @@ Code Review Agent 会从**四个独立视角同时**评审每个改动——逻�
 
 **工作室该从哪里起步？**
 一个仓库、评论式建议、两条 track。然后把资深同学在评审里反复强调的约定写下来——这一步对精确率的提升胜过其他任何事。
+
+## 7. 演示视频
+
+**[观看完整 Code Review Agent 演示视频 →](assets/video/AI-Code-Review-Demo.mp4)**
